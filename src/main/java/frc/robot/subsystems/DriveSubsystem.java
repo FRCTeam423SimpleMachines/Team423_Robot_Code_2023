@@ -11,7 +11,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -51,6 +54,10 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+      private boolean drveSfty = true;
+
+      GenericEntry driveSafety = Shuffleboard.getTab("Safeties").add("Drive Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
   }
@@ -66,6 +73,10 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+
+        drveSfty = driveSafety.getBoolean(true);
+
+        
   }
 
   /**
@@ -104,6 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    if (drveSfty) {
     // Adjust input based on max speed
     xSpeed *= DriveConstants.kMaxSpeedMetersPerSecond;
     ySpeed *= DriveConstants.kMaxSpeedMetersPerSecond;
@@ -119,6 +131,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+    }
   }
 
   /**
