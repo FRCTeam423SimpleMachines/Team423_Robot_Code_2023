@@ -25,7 +25,15 @@ public final class Constants {
   }
 
   public static class ControlConstants {
-    public static final int kSetXButton = 5;
+    public static final int kLeftXAxis= 0;
+    public static final int kLeftYAxis= 1;
+    public static final int kRightXAxis = 4;
+    public static final int kRightYAxis = 5;
+
+    public static final int kLeftTrigger = 2;
+    public static final int kRightTrigger = 3;
+
+    public static final int kSetXButton = 3; //x button
   }
 
   public static final class DriveConstants {
