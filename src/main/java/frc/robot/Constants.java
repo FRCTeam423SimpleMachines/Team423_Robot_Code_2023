@@ -64,7 +64,7 @@ public final class Constants {
     public static final double kBackLeftChassisAngularOffset = Math.PI;
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
-    public static final int kFeildOrientOffset = 90;
+    public static final int kFieldOrientOffset = 90;
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 10;
