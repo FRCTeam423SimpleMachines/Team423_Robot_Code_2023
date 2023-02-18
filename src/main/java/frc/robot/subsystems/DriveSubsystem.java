@@ -15,6 +15,8 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,9 +60,17 @@ public class DriveSubsystem extends SubsystemBase {
       private boolean drveSfty = true;
 
       GenericEntry driveSafety = Shuffleboard.getTab("Safeties").add("Drive Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+      
+      
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    Shuffleboard.getTab("Drivebase").add("Drive/Gyro Angle", m_gyro.getAngle()).getEntry();
+    Shuffleboard.getTab("Drivebase").add("Drive/Pose Angle", getHeading()).getEntry();
+    //Shuffleboard.getTab("Drivebase").add("Drive/Front Left Wheel",m_frontLeft.getPosition());
+    //Shuffleboard.getTab("Drivebase").add("Drive/Front Right Wheel",m_frontRight.getPosition());
+    //Shuffleboard.getTab("Drivebase").add("Drive/RerarLeft Wheel",m_rearLeft.getPosition());
+    //Shuffleboard.getTab("Drivebase").add("Drive/Rear Right Wheel",m_rearRight.getPosition());
   }
 
   @Override
@@ -76,8 +86,11 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
         drveSfty = driveSafety.getBoolean(true);
-
-        
+    
+    SmartDashboard.putNumber("Drive/Gyro Angle", m_gyro.getAngle());
+    SmartDashboard.putNumber("Drive/Pose Angle", getHeading());
+    Shuffleboard.update();
+    
   }
 
   /**

@@ -33,7 +33,17 @@ public final class Constants {
     public static final int kLeftTrigger = 2;
     public static final int kRightTrigger = 3;
 
-    public static final int kSetXButton = 3; //x button
+    public static final int kAButton = 1;
+    public static final int kBButton = 2;
+    public static final int kXButton = 3;
+    public static final int kYButton = 4;
+    public static final int kLeftBumber = 5;
+    public static final int kRightBumber = 6;
+    public static final int kBackButton = 7;
+    public static final int kStartButton = 8;
+    public static final int kLeftStickButton = 9;
+    public static final int kRoghtStickButton = 10;
+    
   }
 
   public static final class DriveConstants {
@@ -79,7 +89,7 @@ public final class Constants {
     public static final int kRearLeftTurningCanId = 17;
     
 
-    public static final boolean kGyroReversed = false;
+    public static final boolean kGyroReversed = true;
   }
 
   public static final class ModuleConstants {

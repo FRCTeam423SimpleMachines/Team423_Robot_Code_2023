@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoNothingAuton;
+import frc.robot.commands.Drive;
 import frc.robot.commands.TrajectoryAuton;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -42,13 +43,11 @@ public class RobotContainer {
     m_chooser.addOption("Trajectory", new TrajectoryAuton(m_DriveSubsystem));
 
     m_DriveSubsystem.setDefaultCommand(
-      new RunCommand(
-        () -> m_DriveSubsystem.drive(
-          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis), 0.06),
-          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis), 0.06),
+      new Drive(
+          MathUtil.applyDeadband(!m_driverController.getRawButton(Constants.ControlConstants.kRightBumber) ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis) : 0.0, 0.06),
+          MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.ControlConstants.kRightTrigger) < 0.6 ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis) : 0.0, 0.06),
           MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis), 0.06),
-          true),
-        m_DriveSubsystem));
+          true, m_DriveSubsystem, 1.0));
     
   }
 
@@ -63,10 +62,18 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    new JoystickButton(m_driverController, Constants.ControlConstants.kSetXButton)
+    new JoystickButton(m_driverController, Constants.ControlConstants.kXButton)
         .whileTrue(new RunCommand(
             () -> m_DriveSubsystem.setX(),
             m_DriveSubsystem));
+/* 
+    new JoystickButton(m_driverController, Constants.ControlConstants.kLeftBumber)
+        .whileTrue(new Drive(
+          MathUtil.applyDeadband(!m_driverController.getRawButton(Constants.ControlConstants.kRightBumber) ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis) : 0.0, 0.06),
+          MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.ControlConstants.kRightTrigger) < 0.6 ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis) : 0.0, 0.06),
+          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis), 0.06),
+          true, m_DriveSubsystem, 0.5));
+*/
             
   }
 
