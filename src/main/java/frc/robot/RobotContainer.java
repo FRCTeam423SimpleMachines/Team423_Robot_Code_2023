@@ -43,12 +43,12 @@ public class RobotContainer {
     m_chooser.addOption("Trajectory", new TrajectoryAuton(m_DriveSubsystem));
 
     m_DriveSubsystem.setDefaultCommand(
-      new Drive(
-          MathUtil.applyDeadband(!m_driverController.getRawButton(Constants.ControlConstants.kRightBumber) ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis) : 0.0, 0.06),
-          MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.ControlConstants.kRightTrigger) < 0.6 ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis) : 0.0, 0.06),
-          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis), 0.06),
-          true, m_DriveSubsystem, 1.0));
-    
+      new RunCommand(
+        () -> m_DriveSubsystem.drive(
+          MathUtil.applyDeadband(squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
+          MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
+          MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
+          true), m_DriveSubsystem));
   }
 
   /**
@@ -66,6 +66,15 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_DriveSubsystem.setX(),
             m_DriveSubsystem));
+
+    new JoystickButton(m_driverController, Constants.ControlConstants.kRightBumber)
+        .whileTrue(new RunCommand(
+          () -> m_DriveSubsystem.drive(
+            MathUtil.applyDeadband(0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
+            MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
+            MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
+            true), m_DriveSubsystem));
+
 /* 
     new JoystickButton(m_driverController, Constants.ControlConstants.kLeftBumber)
         .whileTrue(new Drive(
@@ -84,5 +93,13 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return m_chooser.getSelected();
+  }
+
+  public double squareInput(double x){
+    if (x > 0){
+      return Math.pow(x, 2);
+    } else {
+      return -Math.pow(x,2);
+    }
   }
 }

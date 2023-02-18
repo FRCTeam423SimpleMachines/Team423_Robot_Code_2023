@@ -67,10 +67,6 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     Shuffleboard.getTab("Drivebase").add("Drive/Gyro Angle", m_gyro.getAngle()).getEntry();
     Shuffleboard.getTab("Drivebase").add("Drive/Pose Angle", getHeading()).getEntry();
-    //Shuffleboard.getTab("Drivebase").add("Drive/Front Left Wheel",m_frontLeft.getPosition());
-    //Shuffleboard.getTab("Drivebase").add("Drive/Front Right Wheel",m_frontRight.getPosition());
-    //Shuffleboard.getTab("Drivebase").add("Drive/RerarLeft Wheel",m_rearLeft.getPosition());
-    //Shuffleboard.getTab("Drivebase").add("Drive/Rear Right Wheel",m_rearRight.getPosition());
   }
 
   @Override
@@ -89,6 +85,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     SmartDashboard.putNumber("Drive/Gyro Angle", m_gyro.getAngle());
     SmartDashboard.putNumber("Drive/Pose Angle", getHeading());
+    SmartDashboard.putNumber("Drive/Front Left", m_frontLeft.getPosition().angle.getDegrees());
     Shuffleboard.update();
     
   }

@@ -10,6 +10,8 @@ public class Drive extends CommandBase{
     double ySpeed;
     double speed;
     double rot;
+    boolean strafeLR;
+    boolean strafeFB;
     boolean fieldRelative;
 
     public Drive(double x, double y, double r, Boolean fieldR, DriveSubsystem drive, double spd) {
@@ -32,6 +34,11 @@ public class Drive extends CommandBase{
     public void execute() {
         m_drive.drive(xSpeed*speed , ySpeed*speed , rot*speed ,fieldRelative);
     }
+
+    public void changeSpeed(double spd){
+        speed = spd;
+    }
+
 
     // Called once the command ends or is interrupted.
     @Override
