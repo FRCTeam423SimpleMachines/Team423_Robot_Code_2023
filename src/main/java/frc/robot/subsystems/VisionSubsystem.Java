@@ -11,6 +11,18 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+//To enable tethered limelight communication while tethered to the robot (before competition - day of)
+import edu.wpi.first.wpiutil.net.PortForwarder;
+@Override
+public void robotInit()
+{
+    // Make sure you only configure port forwarding once in your robot code.
+    // Do not place these function calls in any periodic functions
+    for (int port = 5800; port <= 5805; port++) {
+        PortForwarder.add(port, "limelight.local", port);
+    }
+}
+
 public class VisionSubsystem extends SubsystemBase {
 
 NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
