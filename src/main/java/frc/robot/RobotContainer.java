@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoNothingAuton;
-import frc.robot.commands.Drive;
 import frc.robot.commands.TrajectoryAuton;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -45,10 +44,10 @@ public class RobotContainer {
     m_DriveSubsystem.setDefaultCommand(
       new RunCommand(
         () -> m_DriveSubsystem.drive(
-          MathUtil.applyDeadband(squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
+          MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
-          true), m_DriveSubsystem));
+          false, false), m_DriveSubsystem));
   }
 
   /**
@@ -67,13 +66,18 @@ public class RobotContainer {
             () -> m_DriveSubsystem.setX(),
             m_DriveSubsystem));
 
+    new JoystickButton(m_driverController, Constants.ControlConstants.kYButton)
+        .whileTrue(new RunCommand(
+            () -> m_DriveSubsystem.resetGyro(),
+            m_DriveSubsystem ));
+
     new JoystickButton(m_driverController, Constants.ControlConstants.kRightBumber)
         .whileTrue(new RunCommand(
           () -> m_DriveSubsystem.drive(
-            MathUtil.applyDeadband(0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
             MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
+            MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
             MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
-            true), m_DriveSubsystem));
+            false, false), m_DriveSubsystem));
 
 /* 
     new JoystickButton(m_driverController, Constants.ControlConstants.kLeftBumber)

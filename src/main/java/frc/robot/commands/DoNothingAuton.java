@@ -20,7 +20,7 @@ public class DoNothingAuton extends CommandBase{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_drive.drive(0.0, 0.0,0.0,true);
+        m_drive.drive(0.0, 0.0,0.0,true, false);
     }
 
     // Called once the command ends or is interrupted.
