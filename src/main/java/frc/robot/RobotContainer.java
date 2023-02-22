@@ -44,12 +44,10 @@ public class RobotContainer {
     m_DriveSubsystem.setDefaultCommand(
       new RunCommand(
         () -> m_DriveSubsystem.drive(
-          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis), 0.06),
-          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis), 0.06),
-          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis), 0.06),
-          true),
-        m_DriveSubsystem));
-    
+          MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
+          MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
+          MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
+          false, false), m_DriveSubsystem));
   }
 
   /**
@@ -63,10 +61,32 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    new JoystickButton(m_driverController, Constants.ControlConstants.kSetXButton)
+    new JoystickButton(m_driverController, Constants.ControlConstants.kXButton)
         .whileTrue(new RunCommand(
             () -> m_DriveSubsystem.setX(),
             m_DriveSubsystem));
+
+    new JoystickButton(m_driverController, Constants.ControlConstants.kYButton)
+        .whileTrue(new RunCommand(
+            () -> m_DriveSubsystem.resetGyro(),
+            m_DriveSubsystem ));
+
+    new JoystickButton(m_driverController, Constants.ControlConstants.kRightBumber)
+        .whileTrue(new RunCommand(
+          () -> m_DriveSubsystem.drive(
+            MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
+            MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
+            MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
+            false, false), m_DriveSubsystem));
+
+/* 
+    new JoystickButton(m_driverController, Constants.ControlConstants.kLeftBumber)
+        .whileTrue(new Drive(
+          MathUtil.applyDeadband(!m_driverController.getRawButton(Constants.ControlConstants.kRightBumber) ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis) : 0.0, 0.06),
+          MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.ControlConstants.kRightTrigger) < 0.6 ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis) : 0.0, 0.06),
+          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis), 0.06),
+          true, m_DriveSubsystem, 0.5));
+*/
             
   }
 
@@ -77,5 +97,13 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return m_chooser.getSelected();
+  }
+
+  public double squareInput(double x){
+    if (x > 0){
+      return Math.pow(x, 2);
+    } else {
+      return -Math.pow(x,2);
+    }
   }
 }

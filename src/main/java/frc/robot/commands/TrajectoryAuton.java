@@ -80,7 +80,7 @@ public class TrajectoryAuton extends CommandBase {
   m_DriveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
   // Run path following command, then stop at the end.
-  swerveControllerCommand.andThen(() -> m_DriveSubsystem.drive(0, 0, 0, false));
+  swerveControllerCommand.andThen(() -> m_DriveSubsystem.drive(0, 0, 0, false, false));
   }
   
 

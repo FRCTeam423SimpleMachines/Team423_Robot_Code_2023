@@ -33,7 +33,17 @@ public final class Constants {
     public static final int kLeftTrigger = 2;
     public static final int kRightTrigger = 3;
 
-    public static final int kSetXButton = 3; //x button
+    public static final int kAButton = 1;
+    public static final int kBButton = 2;
+    public static final int kXButton = 3;
+    public static final int kYButton = 4;
+    public static final int kLeftBumber = 5;
+    public static final int kRightBumber = 6;
+    public static final int kBackButton = 7;
+    public static final int kStartButton = 8;
+    public static final int kLeftStickButton = 9;
+    public static final int kRoghtStickButton = 10;
+    
   }
 
   public static final class DriveConstants {
@@ -41,6 +51,10 @@ public final class Constants {
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+
+    public static final double kDirectionSlewRate = 1.2; // radians per second
+    public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     public static final double kDriveBaseWidth = 24; //inches
     public static final double kDriveBaseLength = 30; //inches
