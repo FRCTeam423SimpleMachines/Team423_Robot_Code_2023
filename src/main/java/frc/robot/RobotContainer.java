@@ -9,6 +9,9 @@ import frc.robot.commands.DoNothingAuton;
 import frc.robot.commands.DriveAuton;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.TrajectoryAuton;
+import frc.robot.commands.balanceAuton.BalanceAuton;
+import frc.robot.commands.balanceAuton.BalancePath1;
+import frc.robot.commands.balanceAuton.BalancePath2;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
@@ -46,6 +49,7 @@ public class RobotContainer {
     m_chooser.setDefaultOption("Do Nothing", new DoNothingAuton(m_DriveSubsystem));
     m_chooser.addOption("Trajectory", new TrajectoryAuton(m_DriveSubsystem));
     m_chooser.addOption("Drive forward 3m", new DriveAuton(m_DriveSubsystem, DriveDistance.returnController(3.0, m_DriveSubsystem)));
+    m_chooser.addOption("Charging Station Balance", new BalanceAuton(m_DriveSubsystem, BalancePath1.returnController(m_DriveSubsystem), BalancePath2.returnController(m_DriveSubsystem)));
 
     // Put the chooser on the dashboard
     Shuffleboard.getTab("Autonomous").add(m_chooser);
