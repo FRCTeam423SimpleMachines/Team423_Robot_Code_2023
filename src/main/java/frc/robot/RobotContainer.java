@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoNothingAuton;
+import frc.robot.commands.DriveAuton;
+import frc.robot.commands.DriveDistance;
 import frc.robot.commands.TrajectoryAuton;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -43,6 +45,7 @@ public class RobotContainer {
 
     m_chooser.setDefaultOption("Do Nothing", new DoNothingAuton(m_DriveSubsystem));
     m_chooser.addOption("Trajectory", new TrajectoryAuton(m_DriveSubsystem));
+    m_chooser.addOption("Drive forward 3m", new DriveAuton(m_DriveSubsystem, DriveDistance.returnController(3.0, m_DriveSubsystem)));
 
     // Put the chooser on the dashboard
     Shuffleboard.getTab("Autonomous").add(m_chooser);
