@@ -51,6 +51,8 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
+  private double robotAngle = 0;
+
   
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -139,6 +141,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetGyro(){
     m_gyro.reset();
+    robotAngle = 0;
   }
 
   /**
@@ -149,13 +152,28 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot           Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
+   * @param gyroStability Whether or not to use the gyrostabilization.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit, boolean gyroStability) {
 
     if (drveSfty) {
         
       double xSpeedCommanded;
       double ySpeedCommanded;
+
+      if (rot > Math.pow(0.5*0.3, 2) || rot < -Math.pow(0.5*0.3, 2)){
+        robotAngle = -m_gyro.getAngle();
+      }
+
+      if (gyroStability == true){
+
+        if (-m_gyro.getAngle() > (5 + robotAngle)){
+          rot += -0.1;
+        } else if (-m_gyro.getAngle() < (robotAngle - 5)){
+          rot += 0.1;
+        }
+
+      }
   
       if (rateLimit) {
         // Convert XY to polar for rate limiting
@@ -222,6 +240,19 @@ public class DriveSubsystem extends SubsystemBase {
       m_rearRight.setDesiredState(swerveModuleStates[3]);
 
     }
+  }
+
+    /**
+   * Method to drive the robot using joystick info.
+   *
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
+   */
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+      drive(xSpeed, ySpeed, rot, fieldRelative, rateLimit, true);
   }
 
   /**
