@@ -60,7 +60,7 @@ public class RobotContainer {
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
-          true, false), m_DriveSubsystem));
+          true, false, true), m_DriveSubsystem));
   }
 
   /**
@@ -90,7 +90,7 @@ public class RobotContainer {
             MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
             MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
             MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
-            true, false), m_DriveSubsystem));
+            true, false, true), m_DriveSubsystem));
 
 /* 
     new JoystickButton(m_driverController, Constants.ControlConstants.kLeftBumber)

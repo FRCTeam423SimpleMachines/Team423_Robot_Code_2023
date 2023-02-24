@@ -20,8 +20,8 @@ public class BalancePath1 {
     public static SwerveControllerCommand returnController(DriveSubsystem m_DriveSubsystem){
             // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
-        1,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        2,
+        2.0)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics);
 
@@ -32,7 +32,7 @@ public class BalancePath1 {
         // Pass through these two interior waypoints, making an 's' curve path
         List.of(new Translation2d(1, 0), new Translation2d(2, 0)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(5, 0, new Rotation2d(0)),
+        new Pose2d(4, 0, new Rotation2d(0)),
         config);
 
     ProfiledPIDController thetaController = new ProfiledPIDController(

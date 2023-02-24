@@ -30,9 +30,9 @@ public class BalancePath2 {
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(-1, .3), new Translation2d(-2, -.3)),
+        List.of(new Translation2d(-0.5, .01), new Translation2d(-1, -.01)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(-3, 0, new Rotation2d(0)),
+        new Pose2d(-1.6, 0, new Rotation2d(0)),
         config);
 
     ProfiledPIDController thetaController = new ProfiledPIDController(

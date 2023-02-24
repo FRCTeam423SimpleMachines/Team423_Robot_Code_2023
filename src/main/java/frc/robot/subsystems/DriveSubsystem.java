@@ -68,7 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      Rotation2d.fromDegrees(-m_gyro.getAngle()),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -76,15 +76,15 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
-      private boolean drveSfty = true;
+    private boolean drveSfty = true;
 
-      GenericEntry driveSafety = Shuffleboard.getTab("Safeties").add("Drive Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+    GenericEntry driveSafety = Shuffleboard.getTab("Safeties").add("Drive Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
       
       
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    Shuffleboard.getTab("Drivebase").add("Drive/Gyro Angle", m_gyro.getAngle()).getEntry();
+    Shuffleboard.getTab("Drivebase").add("Drive/Gyro Angle", -m_gyro.getAngle()).getEntry();
     Shuffleboard.getTab("Drivebase").add("Drive/Pose Angle", getHeading()).getEntry();
   }
 
@@ -92,7 +92,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -101,8 +101,9 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
         drveSfty = driveSafety.getBoolean(true);
+        
     
-    SmartDashboard.putNumber("Drive/Gyro Angle", m_gyro.getAngle());
+    SmartDashboard.putNumber("Drive/Gyro Angle", -m_gyro.getAngle());
     SmartDashboard.putNumber("Drive/Pose Angle", getHeading());
     SmartDashboard.putNumber("Drive/Front Left", m_frontLeft.getPosition().angle.getDegrees());
     Shuffleboard.update();
@@ -125,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -164,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase {
       if (rot > Math.pow(0.5*0.3, 2) || rot < -Math.pow(0.5*0.3, 2)){
         robotAngle = -m_gyro.getAngle();
       }
-
+      
       if (gyroStability == true){
 
         if (-m_gyro.getAngle() > (5 + robotAngle)){
@@ -252,7 +253,7 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
-      drive(xSpeed, ySpeed, rot, fieldRelative, rateLimit, true);
+      drive(xSpeed, ySpeed, rot, fieldRelative, rateLimit, false);
   }
 
   /**
@@ -298,7 +299,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(-m_gyro.getAngle()).getDegrees();
   }
 
   /**
