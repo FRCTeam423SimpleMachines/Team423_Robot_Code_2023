@@ -164,6 +164,21 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+
+    //Feild distances in meters
+    public static final double kCommunityToMiddleX = 2.16230;
+    public static final double kEndGridToMidCargoY = 0.4064;
+    public static final double kMidGridToMidCargoY = 0.1524;
+    public static final double kGridToMidCargoX = 5.6896;
+    public static final double kGridToChargeX = 1.541526;
+    public static final double kInnerChargeToMidGargoX = 4.148074;
+    public static final double kMidGridToMidCargoX = 5.646928;
+    public static final double kCommunityToBalancedChargeX = 1.2954;
+    public static final double kMidCargoToChargeX = 1.755648; 
+    public static final double kMidGridToCommunityEdgeX = 3.484626;
+    public static final double kMidGridToMidCagroY = 0.6096;
+    public static final double kMidCagroToChargeX = 128.75;
   }
 
   public static final class NeoMotorConstants {
