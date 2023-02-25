@@ -166,19 +166,34 @@ public final class Constants {
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
 
 
-    //Feild distances in meters
-    public static final double kCommunityToMiddleX = 2.16230;
-    public static final double kEndGridToMidCargoY = 0.4064;
-    public static final double kMidGridToMidCargoY = 0.1524;
-    public static final double kGridToMidCargoX = 5.6896;
-    public static final double kGridToChargeX = 1.541526;
-    public static final double kInnerChargeToMidGargoX = 4.148074;
-    public static final double kMidGridToMidCargoX = 5.646928;
-    public static final double kCommunityToBalancedChargeX = 1.2954;
-    public static final double kMidCargoToChargeX = 1.755648; 
-    public static final double kMidGridToCommunityEdgeX = 3.484626;
-    public static final double kMidGridToMidCagroY = 0.6096;
-    public static final double kMidCagroToChargeX = 128.75;
+    //Feild distances in meters (described)
+    /*
+    (all measurements with endpoints on the charging station are calculated for balancing)
+    - Edge of community to mid-field (TBx) - 85.13in/2.162302m
+    - End-scoring node to directly across from pre-placed mid-field cargo (TBy) - 16in/0.4064m
+    - Middle-scoring node to directly across from pre-placed mid-field cargo (TBy) - 6in/0.1524m
+    - Scoring node to mid-field cargo (TBx) - 224in/5.6896m
+    - Scoring node to charging station (Mx) - 60.69in/1.541526m
+    - Inner edge of charging station to mid-field cargo (Mx) - 163.31in/4.148074m
+    - Middle scoring node to pre-placed mid-field cargo (Mx) - 222.32in/5.646928m
+    - Edge of community to balanced on charging station (Mx) - 51in/1.2954m
+    - Middle scoring node to edge of community (charging station) (Mx) - 137.19in/3.484626m
+    - Middle scoring node to right across from pre-placed mid-field cargo 2 (My) - 24in/0.6096m
+    - Middle scoring node to right across from pre-placed mid-field cargo 3 (My) - 24in/0.6096m
+    - Mid-field cargo to charging station - middle (Mx) - 136.13in/3.457702m
+    */
+    //Feild distances in meters (initialized)
+    public static final double kCommunityToMidTBx = 2.16230;
+    public static final double kEndNodeToMidCargoTBy = 0.4064;
+    public static final double kMidNodeToMidCargoTBy = 0.1524;
+    public static final double kNodeToMidCargoTBx = 5.6896;
+    public static final double kNodeToChargeMx = 1.541526;
+    public static final double kInnerChargeToMidCargoMx = 4.148074;
+    public static final double kMidNodeToMidCargoMx = 5.646928;
+    public static final double kEdgeCommunityToChargeMx = 1.2954;
+    public static final double kMidNodeToCommunityEdgeMx = 3.484626;
+    public static final double kMidNodeToMidCargosMy = 0.6096;
+    public static final double kMidCargoToChargeM = 3.457702;
   }
 
   public static final class NeoMotorConstants {
