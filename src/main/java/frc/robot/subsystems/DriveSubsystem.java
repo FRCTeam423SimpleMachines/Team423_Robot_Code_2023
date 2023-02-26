@@ -51,6 +51,8 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
+  private double robotAngle = 0;
+
   
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -66,7 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      Rotation2d.fromDegrees(-m_gyro.getAngle()),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -74,15 +76,15 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
-      private boolean drveSfty = true;
+    private boolean drveSfty = true;
 
-      GenericEntry driveSafety = Shuffleboard.getTab("Safeties").add("Drive Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+    GenericEntry driveSafety = Shuffleboard.getTab("Safeties").add("Drive Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
       
       
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    Shuffleboard.getTab("Drivebase").add("Drive/Gyro Angle", m_gyro.getAngle()).getEntry();
+    Shuffleboard.getTab("Drivebase").add("Drive/Gyro Angle", -m_gyro.getAngle()).getEntry();
     Shuffleboard.getTab("Drivebase").add("Drive/Pose Angle", getHeading()).getEntry();
   }
 
@@ -90,7 +92,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -99,8 +101,9 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
         drveSfty = driveSafety.getBoolean(true);
+        
     
-    SmartDashboard.putNumber("Drive/Gyro Angle", m_gyro.getAngle());
+    SmartDashboard.putNumber("Drive/Gyro Angle", -m_gyro.getAngle());
     SmartDashboard.putNumber("Drive/Pose Angle", getHeading());
     SmartDashboard.putNumber("Drive/Front Left", m_frontLeft.getPosition().angle.getDegrees());
     Shuffleboard.update();
@@ -123,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -131,6 +134,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         },
         pose);
+    m_gyro.reset();
+    
   }
 
   /**
@@ -139,6 +144,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetGyro(){
     m_gyro.reset();
+    robotAngle = 0;
   }
 
   /**
@@ -149,13 +155,28 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot           Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
+   * @param gyroStability Whether or not to use the gyrostabilization.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit, boolean gyroStability) {
 
     if (drveSfty) {
         
       double xSpeedCommanded;
       double ySpeedCommanded;
+
+      if (rot > Math.pow(0.5*0.3, 2) || rot < -Math.pow(0.5*0.3, 2)){
+        robotAngle = -m_gyro.getAngle();
+      }
+      
+      if (gyroStability == true){
+
+        if (-m_gyro.getAngle() > (5 + robotAngle)){
+          rot += -0.1;
+        } else if (-m_gyro.getAngle() < (robotAngle - 5)){
+          rot += 0.1;
+        }
+
+      }
   
       if (rateLimit) {
         // Convert XY to polar for rate limiting
@@ -224,6 +245,19 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
+    /**
+   * Method to drive the robot using joystick info.
+   *
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
+   */
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+      drive(xSpeed, ySpeed, rot, fieldRelative, rateLimit, false);
+  }
+
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -267,7 +301,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(-m_gyro.getAngle()).getDegrees();
   }
 
   /**
