@@ -27,11 +27,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    
+
   }
 
   public void setArm1Power(double pow) {
-    m_arm1Encoder.getAbsolutePosition();
+    m_arm1.set(pow);
   }
 
   public void setArm2Power(double pow) {
