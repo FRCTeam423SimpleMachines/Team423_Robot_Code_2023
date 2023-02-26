@@ -158,7 +158,7 @@ public final class Constants {
     public static final double kArm1MaxAcceleration = 0.75;
 
     public static final double kArm2MaxVelocity = 1.75;
-    public static final double kArm3MaxAcceleration = 0.75;
+    public static final double kArm2MaxAcceleration = 0.75;
     
     public static final double kArm1P = 1;
     public static final double kArm1I = 0;

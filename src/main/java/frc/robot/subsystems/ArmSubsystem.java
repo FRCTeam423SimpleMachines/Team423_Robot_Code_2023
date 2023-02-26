@@ -28,17 +28,14 @@ public class ArmSubsystem extends SubsystemBase {
   private DutyCycleEncoder m_arm1Encoder = new DutyCycleEncoder(ArmConstansts.kArm1EncoderChannel);
   private DutyCycleEncoder m_arm2Encoder = new DutyCycleEncoder(ArmConstansts.kArm2EncoderChannel);
 
-  private double arm1Position;
-  private double arm2Position;
-
   private final TrapezoidProfile.Constraints m_arm1Constraints = new TrapezoidProfile.Constraints(ArmConstansts.kArm1MaxVelocity, ArmConstansts.kArm1MaxAcceleration);
   private final TrapezoidProfile.Constraints m_arm2Constraints = new TrapezoidProfile.Constraints(ArmConstansts.kArm2MaxVelocity, ArmConstansts.kArm2MaxAcceleration);
   
   private final ProfiledPIDController m_arm1Controller = new ProfiledPIDController(ArmConstansts.kArm1P, ArmConstansts.kArm1I, ArmConstansts.kArm1D, m_arm1Constraints);
   private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstansts.kArm2P, ArmConstansts.kArm2I, ArmConstansts.kArm2D, m_arm2Constraints);
 
-  ArmFeedforward arm1Feedforward = new ArmFeedforward(ArmConstansts.kArm1S,ArmConstansts.kArm1G,ArmConstansts.kArm1V,ArmConstansts.kArm1A);
-  ArmFeedforward arm2Feedforward = new ArmFeedforward(ArmConstansts.kArm2S,ArmConstansts.kArm2G,ArmConstansts.kArm2V,ArmConstansts.kArm2A);
+  //ArmFeedforward arm1Feedforward = new ArmFeedforward(ArmConstansts.kArm1S,ArmConstansts.kArm1G,ArmConstansts.kArm1V,ArmConstansts.kArm1A);
+  //ArmFeedforward arm2Feedforward = new ArmFeedforward(ArmConstansts.kArm2S,ArmConstansts.kArm2G,ArmConstansts.kArm2V,ArmConstansts.kArm2A);
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -54,16 +51,16 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void updateArmsPos() {
-    m_arm1.setVoltage(m_arm1Controller.calculate(m_arm1Encoder.getDistance(), arm1Position));
-    m_arm2.set(m_arm2Controller.calculate(m_arm1Encoder.getDistance(), arm2Position));
+    m_arm1.setVoltage(m_arm1Controller.calculate(m_arm1Encoder.getDistance()));
+    m_arm2.set(m_arm2Controller.calculate(m_arm1Encoder.getDistance()));
   }
   
   public void setArm1Pos(double pos) {
-    arm1Position = pos;
+    m_arm1Controller.setGoal(pos);
   }
 
   public void setArm2Pos(double pos) {
-    arm2Position = pos;
+    m_arm1Controller.setGoal(pos);
   }
 
   public double getArm1Pos() {
