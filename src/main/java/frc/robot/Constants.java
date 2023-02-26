@@ -153,6 +153,12 @@ public final class Constants {
     
     public static final int kArm1EncoderChannel = 0;
     public static final int kArm2EncoderChannel = 1;
+
+    public static final double kArm1MaxVelocity = 1.75;
+    public static final double kArm1MaxAcceleration = 0.75;
+
+    public static final double kArm2MaxVelocity = 1.75;
+    public static final double kArm3MaxAcceleration = 0.75;
     
     public static final double kArm1P = 1;
     public static final double kArm1I = 0;
@@ -161,6 +167,16 @@ public final class Constants {
     public static final double kArm2P = 1;
     public static final double kArm2I = 0;
     public static final double kArm2D = 0;
+
+    public static final double kArm1S = 0;
+    public static final double kArm1G = 0;
+    public static final double kArm1V = 0;
+    public static final double kArm1A = 0;
+
+    public static final double kArm2S = 0;
+    public static final double kArm2G = 0;
+    public static final double kArm2V = 0;
+    public static final double kArm2A = 0;
   }
 
   public static final class OIConstants {
