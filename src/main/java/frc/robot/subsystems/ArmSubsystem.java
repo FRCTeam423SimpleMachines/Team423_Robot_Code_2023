@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,7 +24,12 @@ public class ArmSubsystem extends SubsystemBase {
 
   private DutyCycleEncoder m_arm1Encoder = new DutyCycleEncoder(ArmConstansts.kArm1EncoderChannel);
   private DutyCycleEncoder m_arm2Encoder = new DutyCycleEncoder(ArmConstansts.kArm2EncoderChannel);
+
+  private double arm1Position;
+  private double arm2Position;
   
+  PIDController arm1Controller = new PIDController(ArmConstansts.kArm1P, ArmConstansts.kArm1I, ArmConstansts.kArm1D);
+  PIDController arm2Controller = new PIDController(ArmConstansts.kArm2P, ArmConstansts.kArm2I, ArmConstansts.kArm2D);
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -38,8 +44,21 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm2.set(pow);
   }
 
+  public void updateArmsPos() {
+    m_arm1.set(arm1Controller.calculate(m_arm1Encoder.getDistance(), arm1Position));
+    m_arm2.set(arm2Controller.calculate(m_arm1Encoder.getDistance(), arm2Position));
+  }
+  
+  public void setArm1Pos(double pos) {
+    arm1Position = pos;
+  }
+
+  public void setArm2Pos(double pos) {
+    arm2Position = pos;
+  }
+
   public double getArm1Pos() {
-    return m_arm1.getSelectedSensorPosition();
+    return m_arm1Encoder.getAbsolutePosition();
   }
 
   public double getArm2Pos() {
@@ -49,6 +68,7 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateArmsPos();
   }
 
   @Override

@@ -152,7 +152,15 @@ public final class Constants {
     public static final int kArm2CanId = 21;
     
     public static final int kArm1EncoderChannel = 0;
-    public static final int kArm2EncoderChannel = 1; 
+    public static final int kArm2EncoderChannel = 1;
+    
+    public static final double kArm1P = 1;
+    public static final double kArm1I = 0;
+    public static final double kArm1D = 0;
+
+    public static final double kArm2P = 1;
+    public static final double kArm2I = 0;
+    public static final double kArm2D = 0;
   }
 
   public static final class OIConstants {
