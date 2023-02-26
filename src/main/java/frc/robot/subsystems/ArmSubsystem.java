@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -15,17 +17,14 @@ import frc.robot.Constants.ArmConstansts;
 
 public class ArmSubsystem extends SubsystemBase {
 
-  private final CANSparkMax m_arm1 = new CANSparkMax(ArmConstansts.kArm1CanId, MotorType.kBrushless);
+  private final WPI_TalonFX m_arm1 = new WPI_TalonFX(ArmConstansts.kArm1CanId);
   private final CANSparkMax m_arm2 = new CANSparkMax(ArmConstansts.kArm2CanId, MotorType.kBrushless);
-  private final CANSparkMax m_arm3 = new CANSparkMax(ArmConstansts.kArm3CanId, MotorType.kBrushless); //The gripper
 
-  private AbsoluteEncoder m_Arm1Encoder = m_arm1.getAbsoluteEncoder(Type.kDutyCycle);
   private AbsoluteEncoder m_Arm2Encoder = m_arm2.getAbsoluteEncoder(Type.kDutyCycle);
-  private AbsoluteEncoder m_Arm3Encoder = m_arm3.getAbsoluteEncoder(Type.kDutyCycle);
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    
+    m_arm1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
   }
 
   public void setArm1Power(double pow) {
@@ -36,20 +35,12 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm2.set(pow);
   }
 
-  public void setArm3Power(double pow) {
-    m_arm3.set(pow);
-  }
-
   public double getArm1Pos() {
-    return m_Arm1Encoder.getPosition();
+    return m_arm1.getSelectedSensorPosition();
   }
 
   public double getArm2Pos() {
     return m_Arm2Encoder.getPosition();
-  }
-
-  public double getArm3Pos() {
-    return m_Arm3Encoder.getPosition();
   }
 
   @Override
