@@ -134,6 +134,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         },
         pose);
+    m_gyro.reset();
+    
   }
 
   /**
