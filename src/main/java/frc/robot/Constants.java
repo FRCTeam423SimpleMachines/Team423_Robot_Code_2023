@@ -150,7 +150,9 @@ public final class Constants {
   public static final class ArmConstansts {
     public static final int kArm1CanId = 20;
     public static final int kArm2CanId = 21;
-    public static final int kArm3CanId = 22;
+    
+    public static final int kArm1EncoderChannel = 0;
+    public static final int kArm2EncoderChannel = 1; 
   }
 
   public static final class OIConstants {

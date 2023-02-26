@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstansts;
@@ -20,15 +21,17 @@ public class ArmSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_arm1 = new WPI_TalonFX(ArmConstansts.kArm1CanId);
   private final CANSparkMax m_arm2 = new CANSparkMax(ArmConstansts.kArm2CanId, MotorType.kBrushless);
 
-  private AbsoluteEncoder m_Arm2Encoder = m_arm2.getAbsoluteEncoder(Type.kDutyCycle);
+  private DutyCycleEncoder m_arm1Encoder = new DutyCycleEncoder(ArmConstansts.kArm1EncoderChannel);
+  private DutyCycleEncoder m_arm2Encoder = new DutyCycleEncoder(ArmConstansts.kArm2EncoderChannel);
+  
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    m_arm1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+    
   }
 
   public void setArm1Power(double pow) {
-    m_arm1.set(pow);
+    m_arm1Encoder.getAbsolutePosition();
   }
 
   public void setArm2Power(double pow) {
@@ -40,7 +43,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getArm2Pos() {
-    return m_Arm2Encoder.getPosition();
+    return m_arm2Encoder.getAbsolutePosition();
   }
 
   @Override
