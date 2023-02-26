@@ -147,6 +147,12 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
+  public static final class ArmConstansts {
+    public static final int kArm1CanId = 20;
+    public static final int kArm2CanId = 21;
+    public static final int kArm3CanId = 22;
+  }
+
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
   }
