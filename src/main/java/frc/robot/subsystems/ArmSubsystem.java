@@ -15,7 +15,12 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstansts;
@@ -23,7 +28,7 @@ import frc.robot.Constants.ArmConstansts;
 public class ArmSubsystem extends SubsystemBase {
 
   private final WPI_TalonFX m_arm1 = new WPI_TalonFX(ArmConstansts.kArm1CanId);
-  private final CANSparkMax m_arm2 = new CANSparkMax(ArmConstansts.kArm2CanId, MotorType.kBrushless);
+  //private final CANSparkMax m_arm2 = new CANSparkMax(ArmConstansts.kArm2CanId, MotorType.kBrushless);
 
   private DutyCycleEncoder m_arm1Encoder = new DutyCycleEncoder(ArmConstansts.kArm1EncoderChannel);
   private DutyCycleEncoder m_arm2Encoder = new DutyCycleEncoder(ArmConstansts.kArm2EncoderChannel);
@@ -34,12 +39,20 @@ public class ArmSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_arm1Controller = new ProfiledPIDController(ArmConstansts.kArm1P, ArmConstansts.kArm1I, ArmConstansts.kArm1D, m_arm1Constraints);
   private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstansts.kArm2P, ArmConstansts.kArm2I, ArmConstansts.kArm2D, m_arm2Constraints);
 
+  private ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
+  private GenericEntry arm1Pos = armTab.add("Arm 1 Position", m_arm1Encoder.getAbsolutePosition()).getEntry();
+
   //ArmFeedforward arm1Feedforward = new ArmFeedforward(ArmConstansts.kArm1S,ArmConstansts.kArm1G,ArmConstansts.kArm1V,ArmConstansts.kArm1A);
   //ArmFeedforward arm2Feedforward = new ArmFeedforward(ArmConstansts.kArm2S,ArmConstansts.kArm2G,ArmConstansts.kArm2V,ArmConstansts.kArm2A);
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
+    m_arm1Encoder.setDistancePerRotation(360);
+    m_arm2Encoder.setDistancePerRotation(360);
+
+    Shuffleboard.getTab("Arm Subsystem").add("Arm 1 Encoder", m_arm1Encoder);
+    
   }
 
   public void setArm1Power(double pow) {
@@ -47,12 +60,12 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArm2Power(double pow) {
-    m_arm2.set(pow);
+    //m_arm2.set(pow);
   }
 
   public void updateArmsPos() {
-    m_arm1.setVoltage(m_arm1Controller.calculate(m_arm1Encoder.getDistance()));
-    m_arm2.set(m_arm2Controller.calculate(m_arm1Encoder.getDistance()));
+    //m_arm1.set(m_arm1Controller.calculate(m_arm1Encoder.getDistance()));
+    //m_arm2.set(m_arm2Controller.calculate(m_arm1Encoder.getDistance()));
   }
   
   public void setArm1Pos(double pos) {
@@ -75,6 +88,13 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     updateArmsPos();
+    
+    SmartDashboard.putNumber("Arm/Arm 1 Position", m_arm1Encoder.getDistance());
+    SmartDashboard.putData("Arm 1 Encoder", m_arm1Encoder);
+    arm1Pos.setDouble(getArm1Pos());
+    
+    Shuffleboard.update();
+    
   }
 
   @Override
