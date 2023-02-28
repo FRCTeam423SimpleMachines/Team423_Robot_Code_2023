@@ -177,6 +177,11 @@ public final class Constants {
     public static final double kArm2G = 0;
     public static final double kArm2V = 0;
     public static final double kArm2A = 0;
+
+    public static final double kArm1Length = 33; //inches
+    public static final double kArm2Length = 26; //inches
+    public static final double kArm1VerticalOffset = 14;
+    public static final double kArm1HorizontalOffset = 15;
   }
 
   public static final class OIConstants {
