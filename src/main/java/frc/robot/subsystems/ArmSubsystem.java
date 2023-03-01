@@ -4,24 +4,14 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstansts;
 
@@ -40,7 +30,10 @@ public class ArmSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstansts.kArm2P, ArmConstansts.kArm2I, ArmConstansts.kArm2D, m_arm2Constraints);
 
   private ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
-  private GenericEntry arm1Pos = armTab.add("Arm 1 Position", m_arm1Encoder.getAbsolutePosition()).getEntry();
+  private GenericEntry arm1Dist = armTab.add("Arm 1 Distance", m_arm1Encoder.getDistance()).getEntry();
+  private GenericEntry arm1Connect = armTab.add("Arm 1 Connected", m_arm1Encoder.isConnected()).getEntry();
+  private GenericEntry arm2Dist = armTab.add("Arm 2 Distance", m_arm2Encoder.getDistance()).getEntry();
+  private GenericEntry arm2Connect = armTab.add("Arm 2 Connected", m_arm2Encoder.isConnected()).getEntry();
 
   //ArmFeedforward arm1Feedforward = new ArmFeedforward(ArmConstansts.kArm1S,ArmConstansts.kArm1G,ArmConstansts.kArm1V,ArmConstansts.kArm1A);
   //ArmFeedforward arm2Feedforward = new ArmFeedforward(ArmConstansts.kArm2S,ArmConstansts.kArm2G,ArmConstansts.kArm2V,ArmConstansts.kArm2A);
@@ -51,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm1Encoder.setDistancePerRotation(360);
     m_arm2Encoder.setDistancePerRotation(360);
 
-    Shuffleboard.getTab("Arm Subsystem").add("Arm 1 Encoder", m_arm1Encoder);
+    //Shuffleboard.getTab("Arm Subsystem").add("Arm 1 Encoder", m_arm1Encoder);
     
   }
 
@@ -76,23 +69,17 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm1Controller.setGoal(pos);
   }
 
-  public double getArm1Pos() {
-    return m_arm1Encoder.getAbsolutePosition();
-  }
-
-  public double getArm2Pos() {
-    return m_arm2Encoder.getAbsolutePosition();
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateArmsPos();
     
-    SmartDashboard.putNumber("Arm/Arm 1 Position", m_arm1Encoder.getDistance());
-    SmartDashboard.putData("Arm 1 Encoder", m_arm1Encoder);
-    arm1Pos.setDouble(getArm1Pos());
-    
+    //SmartDashboard.putNumber("Arm/Arm 1 Position", m_arm1Encoder.getDistance());
+    //SmartDashboard.putData("Arm 1 Encoder", m_arm1Encoder);
+    arm1Dist.setDouble(m_arm1Encoder.getDistance());
+    arm1Connect.setBoolean(m_arm1Encoder.isConnected());
+    arm2Dist.setDouble(m_arm2Encoder.getDistance());
+    arm2Connect.setBoolean(m_arm2Encoder.isConnected());
     Shuffleboard.update();
     
   }
