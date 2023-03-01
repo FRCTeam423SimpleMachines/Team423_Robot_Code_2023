@@ -32,26 +32,6 @@ NetworkTableEntry tx = table.getEntry("tx");
 NetworkTableEntry ty = table.getEntry("ty");
 NetworkTableEntry ta = table.getEntry("ta");
 
-//Used for estimating distance of reflective tape (measurements to be replaced at a later date)
-NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-NetworkTableEntry ty = table.getEntry("ty");
-double targetOffsetAngle_Vertical = ty.getDouble(0.0);
-
-// how many degrees back is your limelight rotated from perfectly vertical?
-double limelightMountAngleDegrees = 25.0;
-
-// distance from the center of the Limelight lens to the floor
-double limelightLensHeightInches = 20.0;
-
-// distance from the target to the floor
-double goalHeightInches = 60.0;
-
-double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-
-//calculate distance
-double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
-
 cameraMatrix = cv::Matx33d(
                         772.53876202, 0., 479.132337442,
                         0., 769.052151477, 359.143001808,
@@ -110,12 +90,41 @@ private int pipeline = 0;
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+public double getDistance (){
+  if (pipeline == 0) {
+    setDistance(/*distance between center of target and ground */);
+  }
+  else { 
+    setDistance(/*distance between center of target and ground */);
+  }
+}
 
-  public int getPipeline(){
+public double setDistance (double targetFloorDistance) {
+//Used for estimating distance of target (april tag or lower relfective tape target) (measurements to be replaced at a later date)
+NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+NetworkTableEntry ty = table.getEntry("ty");
+double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+
+// how many degrees back is your limelight rotated from perfectly vertical?
+double limelightMountAngleDegrees = 25.0;
+
+// distance from the center of the Limelight lens to the floor
+double limelightLensHeightInches = 20.0;
+
+// distance from the target to the floor
+double goalHeightInches = targetFloorDistance;
+
+double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+//calculate distance
+double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
+}
+  /*public int getPipeline(){
     return pipeline;
 
-  }
-public int calcDistance()
+  }*/
+//to switch between pipelines - called with gamepad input
   public void setPipeline(int i){
    pipeline = NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(i);
     return pipeline;
