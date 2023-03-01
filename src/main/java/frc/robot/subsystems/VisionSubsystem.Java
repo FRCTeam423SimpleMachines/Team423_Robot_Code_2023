@@ -90,39 +90,60 @@ private int pipeline = 0;
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
-public double getDistance (){
-  if (pipeline == 0) {
-    setDistance(/*distance between center of target and ground */);
+
+  public double getDistance (){
+    if (pipeline == 0) {
+      setDistance(/*distance between center of target and ground */);
+    }
+    else { 
+      setDistance(/*distance between center of target and ground */);
+    }
   }
-  else { 
-    setDistance(/*distance between center of target and ground */);
+
+  public double setDistance (double targetFloorDistance) {
+    //Used for estimating distance of target (april tag or lower relfective tape target) (measurements to be replaced at a later date)
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry ty = table.getEntry("ty");
+    double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+
+    // how many degrees back is your limelight rotated from perfectly vertical?
+    double limelightMountAngleDegrees = 25.0;
+
+    // distance from the center of the Limelight lens to the floor
+    double limelightLensHeightInches = 20.0;
+
+    // distance from the target to the floor
+    double goalHeightInches = targetFloorDistance;
+
+    double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+    double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+    //calculate distance
+    double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
   }
-}
 
-public double setDistance (double targetFloorDistance) {
-//Used for estimating distance of target (april tag or lower relfective tape target) (measurements to be replaced at a later date)
-NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-NetworkTableEntry ty = table.getEntry("ty");
-double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+//code to auto-adjust till desired angle is reached
+  /*public double adjustAngle (){
+    float Kp = -0.1f;
+    float min_command = 0.05f;
 
-// how many degrees back is your limelight rotated from perfectly vertical?
-double limelightMountAngleDegrees = 25.0;
-
-// distance from the center of the Limelight lens to the floor
-double limelightLensHeightInches = 20.0;
-
-// distance from the target to the floor
-double goalHeightInches = targetFloorDistance;
-
-double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-
-//calculate distance
-double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
-}
-  /*public int getPipeline(){
-    return pipeline;
-
+    std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+    float tx = table->GetNumber("tx");
+            float heading_error = -tx;
+            float steering_adjust = 0.0f;
+    if (Math.abs(heading_error) > 1.0)
+            {
+                    if (heading_error < 0)
+                    {
+                            steering_adjust = Kp*heading_error + min_command;
+                    }
+                    else
+                    {
+                            steering_adjust = Kp*heading_error - min_command;
+                    }
+            }
+            left_command += steering_adjust;
+            right_command -= steering_adjust;
   }*/
 //to switch between pipelines - called with gamepad input
   public void setPipeline(int i){
