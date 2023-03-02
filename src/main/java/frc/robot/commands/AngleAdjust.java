@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -14,7 +15,7 @@ public class AngleAdjust extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AngleAdjust(ExampleSubsystem subsystem) {
+  public AngleAdjust(VisionSubsystem subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }

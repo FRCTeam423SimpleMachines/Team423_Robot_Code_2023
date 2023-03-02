@@ -116,22 +116,25 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getDistance (){
-    if (pipeline == 0) {
-      setDistance(/*distance between center of target and ground */);
-    }
-    else { 
-      setDistance(/*distance between center of target and ground */);
-    }
-  }
-
-  public double setDistance (double targetFloorDistance) {
     //Used for estimating distance of target (april tag or lower relfective tape target) (measurements to be replaced at a later date)
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     NetworkTableEntry ty = table.getEntry("ty");
     double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+    double targetFloorDistance;
+
+    if (pipeline == 0) {
+      targetFloorDistance = 17;
+    }
+    else if (pipeline == 1){ 
+      if (0<ty<26)
+        targetFloorDistance = 22.75;
+      else {
+        targetFloorDistance = 46;
+      }
+    }
 
     // how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = 25.0;
+    double limelightMountAngleDegrees = 0.0;
 
     // distance from the center of the Limelight lens to the floor
     double limelightLensHeightInches = 20.0;
@@ -144,15 +147,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     //calculate distance
     double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
+    
+    return distanceFromLimelightToGoalInches;
   }
 
-  /**
-     * Gets the calculated distance from the goal
-     * @return distance
-     */
-    public double getDistance() {
-      return distanceFromLimelightToGoalInches;
-  }
+  
 //code to auto-adjust till desired angle is reached
   /*public double adjustAngle (){
     float Kp = -0.1f;
