@@ -14,48 +14,72 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 //To enable tethered limelight communication while tethered to the robot (before competition - day of)
 import edu.wpi.first.wpiutil.net.PortForwarder;
 
+public class VisionSubsystem extends SubsystemBase {
 
-@Override
-public void robotInit()
-{
+   /**
+     * Sets the LED State of the LimeLight
+     * @param ledState - 1: force off 2: force blink 3: force on
+     */
+    public void setLimeLightLED(int ledState) {
+      NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(ledState);
+  }
+
+  private int pipeline = 0;
+//first three to be changed later
+  private final double LENGTH = 2.5;
+  private final double HEIGHT = 7.458333333;
+  private final double LIMELIGHT_HEIGHT = 1.833333;
+  public double tv;
+  public double tx;
+  public double ty;
+  public double ta;
+  private double ts;
+  private double tl;
+  private double tshort;
+  private double tlong;
+  private double thor;
+  private double tvert;
+  private double distanceToGoal;
+  private double angleToGoal;
+
+  private Integer angleOnGoalCount = 0;
+
+  public VisionSubsystem() {
+      tv = 0.0;
+      tx = 0.0;
+      ty = 0.0;
+      ta = 0.0;
+      tlong = 0.0;
+      tshort = 0.0;
+      distanceToGoal = 0.0;
+      angleToGoal = 0.0;
+      angleOnGoalCount = 0;
+  }
+
+  /**
+   * This is the method for pulling values from LimeLight
+   * This is called in the Robot Periodic Method
+   */
+  public void run() {
+      tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+      tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+      ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+      ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+      tlong = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tlong").getDouble(0);
+      tshort = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tshort").getDouble(0);
+      calculateDistance();
+      calculateAngle();
+      logToDashBoard();
+  }
+
+  /** Creates a new VisionSubsystem. */
+  public VisionSubsystem() {
     // Make sure you only configure port forwarding once in your robot code.
     // Do not place these function calls in any periodic functions
     for (int port = 5800; port <= 5805; port++) {
-        PortForwarder.add(port, "limelight.local", port);
+      PortForwarder.add(port, "limelight.local", port);
     }
-}
-
-public class VisionSubsystem extends SubsystemBase {
-
-NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-NetworkTableEntry tx = table.getEntry("tx");
-NetworkTableEntry ty = table.getEntry("ty");
-NetworkTableEntry ta = table.getEntry("ta");
-
-cameraMatrix = cv::Matx33d(
-                        772.53876202, 0., 479.132337442,
-                        0., 769.052151477, 359.143001808,
-                        0., 0., 1.0);
-distortionCoefficient =  std::vector<double> {
-                        2.9684613693070039e-01, -1.4380252254747885e+00,-2.2098421479494509e-03,
-                        -3.3894563533907176e-03, 2.5344430354806740e+00};
-
-focalLength = 2.9272781257541; //mm
-
-//read values periodically
-double x = tx.getDouble(0.0);
-double y = ty.getDouble(0.0);
-double area = ta.getDouble(0.0);
-
-//post to smart dashboard periodically
-SmartDashboard.putNumber("LimelightX", x);
-SmartDashboard.putNumber("LimelightY", y);
-SmartDashboard.putNumber("LimelightArea", area);
-
-private int pipeline = 0;
-
-  /** Creates a new VisionSubsystem. */
-  public VisionSubsystem() {}
+  }
 
   /**
    * Example command factory method.
@@ -122,6 +146,13 @@ private int pipeline = 0;
     double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
   }
 
+  /**
+     * Gets the calculated distance from the goal
+     * @return distance
+     */
+    public double getDistance() {
+      return distanceFromLimelightToGoalInches;
+  }
 //code to auto-adjust till desired angle is reached
   /*public double adjustAngle (){
     float Kp = -0.1f;
@@ -149,5 +180,8 @@ private int pipeline = 0;
   public void setPipeline(int i){
    pipeline = NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(i);
     return pipeline;
+  }
+  public double inchesToMeters (double inch){
+    return inch *= 0.0254;
   }
 }
