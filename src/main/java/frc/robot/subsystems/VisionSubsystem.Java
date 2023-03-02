@@ -103,7 +103,7 @@ public class VisionSubsystem extends SubsystemBase {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     NetworkTableEntry ty = table.getEntry("ty");
     double targetOffsetDistance_Vertical = ty.getDouble(0.0);
-    double targetFloorDistance;
+    double targetFloorDistance = 0;
 
     if (pipeline == 0) {
       targetFloorDistance = 17;
