@@ -11,9 +11,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-//To enable tethered limelight communication while tethered to the robot (before competition - day of)
-import edu.wpi.first.wpiutil.net.PortForwarder;
-
 public class VisionSubsystem extends SubsystemBase {
 
   private int pipeline;
