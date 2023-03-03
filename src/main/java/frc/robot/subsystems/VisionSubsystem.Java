@@ -103,7 +103,7 @@ public class VisionSubsystem extends SubsystemBase {
     double targetFloorDistance = 0;
 
     if (pipeline == 0) {
-      targetFloorDistance = 17;
+      targetFloorDistance = 18.25;
     }
     else if (pipeline == 1){ 
       if (0<targetOffsetDistance_Vertical && targetOffsetDistance_Vertical<26)
