@@ -12,7 +12,10 @@ import frc.robot.commands.TrajectoryAuton;
 import frc.robot.commands.balanceAuton.BalanceAuton;
 import frc.robot.commands.balanceAuton.BalancePath1;
 import frc.robot.commands.balanceAuton.BalancePath2;
+import frc.robot.commands.AngleAdjust;
+import frc.robot.commands.StrafeAdjust;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -32,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
+  private final VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
 
   // A chooser for autonomous commands
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -84,6 +88,12 @@ public class RobotContainer {
             () -> m_DriveSubsystem.resetGyro(),
             m_DriveSubsystem ));
 
+    new JoystickButton(m_driverController, Constants.ControlConstants.kAButton)
+        .whileTrue(new AngleAdjust(m_VisionSubsystem, m_DriveSubsystem));
+
+    new JoystickButton(m_driverController, Constants.ControlConstants.kBButton)
+        .whileTrue(new StrafeAdjust(m.VisionSubsystem, m_DriveSubsystem));
+      
     new JoystickButton(m_driverController, Constants.ControlConstants.kRightBumber)
         .whileTrue(new RunCommand(
           () -> m_DriveSubsystem.drive(
