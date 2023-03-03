@@ -92,7 +92,7 @@ public class RobotContainer {
         .whileTrue(new AngleAdjust(m_VisionSubsystem, m_DriveSubsystem));
 
     new JoystickButton(m_driverController, Constants.ControlConstants.kBButton)
-        .whileTrue(new StrafeAdjust(m.VisionSubsystem, m_DriveSubsystem));
+        .whileTrue(new StrafeAdjust(m_VisionSubsystem, m_DriveSubsystem));
       
     new JoystickButton(m_driverController, Constants.ControlConstants.kRightBumber)
         .whileTrue(new RunCommand(
