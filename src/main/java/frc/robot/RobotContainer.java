@@ -55,6 +55,13 @@ public class RobotContainer {
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
           false, false), m_DriveSubsystem));
+
+    m_ArmSubsystem.setDefaultCommand(
+      new RunCommand(
+        () -> m_ArmSubsystem.setArmPower(0,0),
+        m_ArmSubsystem
+        )
+    );
   }
 
   /**
@@ -88,15 +95,19 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController2, ControlConstants.kAButton)
         .whileTrue(new RunCommand(
-          () -> m_ArmSubsystem.setArm1Power(1.0), m_ArmSubsystem));
+          () -> m_ArmSubsystem.setArm2Power(0.5), m_ArmSubsystem));
 
-          new JoystickButton(m_driverController2, ControlConstants.kYButton)
+    new JoystickButton(m_driverController2, ControlConstants.kXButton)
           .whileTrue(new RunCommand(
-            () -> m_ArmSubsystem.setArm1Power(-1.0), m_ArmSubsystem));
+            () -> m_ArmSubsystem.setArm2Power(-0.5), m_ArmSubsystem)); 
+
+    new JoystickButton(m_driverController2, ControlConstants.kYButton)
+        .whileTrue(new RunCommand(
+          () -> m_ArmSubsystem.setArm1Power(1.0), m_ArmSubsystem));
 
     new JoystickButton(m_driverController2, ControlConstants.kBButton)
         .whileTrue(new RunCommand(
-          () -> m_ArmSubsystem.setArm1Power(0.0), m_ArmSubsystem));
+          () -> m_ArmSubsystem.setArm1Power(-1.0), m_ArmSubsystem));
 
 /* 
     new JoystickButton(m_driverController, Constants.ControlConstants.kLeftBumber)
