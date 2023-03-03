@@ -67,6 +67,11 @@ public class AngleAdjust extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (steeringAdjust == 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
