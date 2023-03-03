@@ -182,6 +182,16 @@ public final class Constants {
     public static final double kArm2Length = 26; //inches
     public static final double kArm1VerticalOffset = 13.75; //inches
     public static final double kArm1HorizontalOffset = 18; //inches
+
+    public static final double kArm1MinAngle = 30;
+    public static final double kArm1MaxAngle = 120;
+    
+    public static final double kArm2MinAngle = 32;
+    public static final double kArm2MaxAngle = 220;
+    
+    public static final double kArm1EncoderAngleOffset = 0;
+    public static final double kArm2EncoderAngleOffset = 0;
+    
   }
 
   public static final class OIConstants {

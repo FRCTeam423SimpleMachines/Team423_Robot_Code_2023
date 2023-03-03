@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +36,9 @@ public class ArmSubsystem extends SubsystemBase {
   private GenericEntry arm2Dist = armTab.add("Arm 2 Distance", m_arm2Encoder.getDistance()).getEntry();
   private GenericEntry arm2Connect = armTab.add("Arm 2 Connected", m_arm2Encoder.isConnected()).getEntry();
 
+  private boolean armSfty = true;
+  GenericEntry armSafety = Shuffleboard.getTab("Safeties").add("Arm Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+
   //ArmFeedforward arm1Feedforward = new ArmFeedforward(ArmConstansts.kArm1S,ArmConstansts.kArm1G,ArmConstansts.kArm1V,ArmConstansts.kArm1A);
   //ArmFeedforward arm2Feedforward = new ArmFeedforward(ArmConstansts.kArm2S,ArmConstansts.kArm2G,ArmConstansts.kArm2V,ArmConstansts.kArm2A);
 
@@ -44,28 +48,56 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm1Encoder.setDistancePerRotation(360);
     m_arm2Encoder.setDistancePerRotation(360);
 
+    m_arm1Encoder.setPositionOffset(ArmConstansts.kArm1EncoderAngleOffset);
+    m_arm2Encoder.setPositionOffset(ArmConstansts.kArm2EncoderAngleOffset);
+
     //Shuffleboard.getTab("Arm Subsystem").add("Arm 1 Encoder", m_arm1Encoder);
     
   }
 
   public void setArm1Power(double pow) {
-    m_arm1.set(pow);
+    if (armSfty) {
+      //m_arm1.set(pow);
+    } else {
+      //m_arm1.set(0.0);
+    }
+
   }
 
   public void setArm2Power(double pow) {
-    //m_arm2.set(pow);
+    if (armSfty) {
+      //m_arm2.set(pow);
+    } else {
+      //m_arm2.set(0.0);
+    }
   }
 
   public void updateArmsPos() {
-    //m_arm1.set(m_arm1Controller.calculate(m_arm1Encoder.getDistance()));
-    //m_arm2.set(m_arm2Controller.calculate(m_arm1Encoder.getDistance()));
+    //setArm1Power(m_arm1Controller.calculate(m_arm1Encoder.getDistance()));
+    //setArm2Power(m_arm2Controller.calculate(m_arm1Encoder.getDistance()));
   }
   
   public void setArm1Pos(double pos) {
+    if (pos < ArmConstansts.kArm1MinAngle) {
+      pos = ArmConstansts.kArm1MinAngle;
+    }
+
+    if (pos > ArmConstansts.kArm1MaxAngle) {
+      pos = ArmConstansts.kArm1MaxAngle;
+    }
+
     m_arm1Controller.setGoal(pos);
   }
 
   public void setArm2Pos(double pos) {
+    if (pos < ArmConstansts.kArm2MinAngle) {
+      pos = ArmConstansts.kArm2MinAngle;
+    }
+
+    if (pos > ArmConstansts.kArm2MaxAngle) {
+      pos = ArmConstansts.kArm2MaxAngle;
+    }
+
     m_arm1Controller.setGoal(pos);
   }
 
@@ -81,6 +113,8 @@ public class ArmSubsystem extends SubsystemBase {
     arm2Dist.setDouble(m_arm2Encoder.getDistance());
     arm2Connect.setBoolean(m_arm2Encoder.isConnected());
     Shuffleboard.update();
+
+    armSfty = armSafety.getBoolean(true);
     
   }
 
