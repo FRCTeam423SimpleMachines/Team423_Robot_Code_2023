@@ -10,15 +10,17 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.GripperConstants;
 
 public class GripperSubsystem extends SubsystemBase {
     
   private DoubleSolenoid m_solenoid;
-  private SparkMaxAbsoluteEncoder m_wristEncoder;
+  private DutyCycleEncoder m_wristEncoder;
   private CANSparkMax m_wristMotor;
-  private SparkMaxPIDController m_pidController;
+  private ProfiledPIDCommand m_pidController;
   
   /** Creates a new GripperSubsystem. */
   public GripperSubsystem() {
@@ -30,43 +32,40 @@ public class GripperSubsystem extends SubsystemBase {
     m_wristMotor.restoreFactoryDefaults();
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
-   // m_wristEncoder = new DutyCycleEncoder(GripperConstants.kWristEncoderPwmID);
-    m_wristEncoder = m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    m_pidController = m_wristMotor.getPIDController();
-    m_pidController.setFeedbackDevice(m_wristEncoder);
-
+    m_wristEncoder = new DutyCycleEncoder(GripperConstants.kWristEncoderPwmID);
+    
     // Apply position conversion factors for the wrist encoder. The
     // native units for position are rotations but we want radians
-    m_wristEncoder.setPositionConversionFactor(GripperConstants.kMotorRotationsToRadians);
+    //m_wristEncoder.setPositionConversionFactor(GripperConstants.kMotorRotationsToRadians);
 
     // Invert the turning encoder, since the output shaft rotates in the opposite direction of
     // the steering motor in the MAXSwerve Module.
-    m_wristEncoder.setInverted(GripperConstants.kWristEncoderInverted);
+    //m_wristEncoder.setInverted(GripperConstants.kWristEncoderInverted);
 
     // Enable PID wrap around for the turning motor. This will allow the PID
     // controller to go through 0 to get to the setpoint i.e. going from 350 degrees
     // to 10 degrees will go through 0 rather than the other direction which is a
     // longer route.
-    m_pidController.setPositionPIDWrappingEnabled(true);
-    m_pidController.setPositionPIDWrappingMinInput(GripperConstants.kWristEncoderPositionPIDMinInput);
-    m_pidController.setPositionPIDWrappingMaxInput(GripperConstants.kWristEncoderPositionPIDMaxInput);
+    //m_pidController.setPositionPIDWrappingEnabled(true);
+    //m_pidController.setPositionPIDWrappingMinInput(GripperConstants.kWristEncoderPositionPIDMinInput);
+    //m_pidController.setPositionPIDWrappingMaxInput(GripperConstants.kWristEncoderPositionPIDMaxInput);
 
     // Set PID parameters
-    m_pidController.setI(GripperConstants.kI);
+    /*m_pidController.setI(GripperConstants.kI);
     m_pidController.setD(GripperConstants.kD);
     m_pidController.setIZone(GripperConstants.kIz);
     m_pidController.setFF(GripperConstants.kFF);
     m_pidController.setOutputRange(GripperConstants.kWristMinSetPoint, GripperConstants.kWristMaxSetPoint);
-
+    */
     m_wristMotor.setIdleMode(GripperConstants.kWristMotorIdleMode);
     m_wristMotor.setSmartCurrentLimit(GripperConstants.kWristMotorCurrentLimit);
 
     // Save the SPARK MAX configurations. If a SPARK MAX browns out during
     // operation, it will maintain the above configurations.
-    m_wristMotor.burnFlash();
+    //m_wristMotor.burnFlash();
     
     // Move wrist to initial position
-    this.setWristAngleRadians(GripperConstants.kWristInitialSetpoint);   
+    //this.setWristAngleRadians(GripperConstants.kWristInitialSetpoint);   
 
     // Create a new solenoid for controlling the pneumatic
     m_solenoid = new DoubleSolenoid(GripperConstants.kSolenoidPCMCanId, GripperConstants.kPneumaticsModuleType, 
@@ -92,7 +91,7 @@ public class GripperSubsystem extends SubsystemBase {
     // and sends it to a motor
     if (setPointValid(angle))
     {
-      m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+    //  m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
     }
   }
 
@@ -108,6 +107,7 @@ public class GripperSubsystem extends SubsystemBase {
   {
     return setpoint > GripperConstants.kWristMinSetPoint && setpoint < GripperConstants.kWristMaxSetPoint;
   }
+
   
 /* 
  * GRIPPER CODE

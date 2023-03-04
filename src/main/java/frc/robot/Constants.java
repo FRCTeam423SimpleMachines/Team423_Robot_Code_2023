@@ -198,7 +198,7 @@ public final class Constants {
      public static double kWristInitialSetpoint = 0;
  
      // How many radians of movement of the gripper per rotation of the motor
-     public static final int kMotorRotationsToRadians = 2 * Math.PI;
+     public static final double kMotorRotationsToRadians = 2 * Math.PI;
      // Maximum and minimum range of the wrist
      public static final double kWristMaxSetPoint = Math.PI/2;
      public static final double kWristMinSetPoint = -Math.PI/2;
@@ -207,9 +207,9 @@ public final class Constants {
      public static final double kWristEncoderPositionPIDMaxInput = (2 * Math.PI);
 
              // PID Variables
-    public static final double kP = 0.1; 
-    public static final double kI = 1e-4;
-    public static final double kD = 1; 
+    public static final double kP = 1; 
+    public static final double kI = 0;
+    public static final double kD = 0; 
     public static final double kIz = 0; 
     public static final double kFF = 0; 
 
@@ -220,7 +220,7 @@ public final class Constants {
 
     public static final IdleMode kWristMotorIdleMode = IdleMode.kBrake;
 
-    public static final int kWristMotorCurrentLimit = 50; // amps
+    public static final int kWristMotorCurrentLimit = 40; // amps
  
      /*
       * Gripper constants
@@ -243,7 +243,7 @@ public final class Constants {
     public static DoubleSolenoid.Value kGripperInitialState = kGripperOpen;
 
     //Assign CAN ID of the Pnuematic Control Module.  By default the system sets this 0
-    public static final int kSolenoidPCMCanId = 0;
+    public static final int kSolenoidPCMCanId = 9;
 
 
 
