@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 public class TrajectoryAuton extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DriveSubsystem m_DriveSubsystem;
+  private SwerveControllerCommand swerveControllerCommand;
 
   /**
    * Creates a new ExampleCommand.
@@ -38,59 +39,45 @@ public class TrajectoryAuton extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // Create config for trajectory
+    TrajectoryConfig config = new TrajectoryConfig(
+    AutoConstants.kMaxSpeedMetersPerSecond,
+    AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+    // Add kinematics to ensure max speed is actually obeyed
+    .setKinematics(DriveConstants.kDriveKinematics);
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-     // Create config for trajectory
-     TrajectoryConfig config = new TrajectoryConfig(
-      AutoConstants.kMaxSpeedMetersPerSecond,
-      AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-      // Add kinematics to ensure max speed is actually obeyed
-      .setKinematics(DriveConstants.kDriveKinematics);
+    // An example trajectory to follow. All units in meters.
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(new Translation2d(1, 0), new Translation2d(2, 0)),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3, 0, new Rotation2d(0)),
+        config);
 
-  // An example trajectory to follow. All units in meters.
-  Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-      // Start at the origin facing the +X direction
-      new Pose2d(0, 0, new Rotation2d(0)),
-      // Pass through these two interior waypoints, making an 's' curve path
-      List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-      // End 3 meters straight ahead of where we started, facing forward
-      new Pose2d(3, 0, new Rotation2d(0)),
-      config);
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-  var thetaController = new ProfiledPIDController(
-      AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-  thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    swerveControllerCommand = new SwerveControllerCommand(
+        exampleTrajectory,
+        m_DriveSubsystem::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
 
-  SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      exampleTrajectory,
-      m_DriveSubsystem::getPose, // Functional interface to feed supplier
-      DriveConstants.kDriveKinematics,
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_DriveSubsystem::setModuleStates,
+        m_DriveSubsystem);
 
-      // Position controllers
-      new PIDController(AutoConstants.kPXController, 0, 0),
-      new PIDController(AutoConstants.kPYController, 0, 0),
-      thetaController,
-      m_DriveSubsystem::setModuleStates,
-      m_DriveSubsystem);
+    // Reset odometry to the starting pose of the trajectory.
+    m_DriveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
-  // Reset odometry to the starting pose of the trajectory.
-  m_DriveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
-
-  // Run path following command, then stop at the end.
-  swerveControllerCommand.andThen(() -> m_DriveSubsystem.drive(0, 0, 0, false, false));
-  }
-  
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+    
+    // Run path following command, then stop at the end.
+    swerveControllerCommand.andThen(() -> m_DriveSubsystem.drive(0, 0, 0, false, false));
   }
 }
