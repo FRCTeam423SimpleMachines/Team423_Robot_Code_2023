@@ -108,11 +108,11 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController2, ControlConstants.kAButton)
         .whileTrue(new RunCommand(
-          () -> m_ArmSubsystem.setArm2Power(0.5), m_ArmSubsystem));
+          () -> m_ArmSubsystem.setArm2Power(0.3), m_ArmSubsystem));
 
     new JoystickButton(m_driverController2, ControlConstants.kXButton)
           .whileTrue(new RunCommand(
-            () -> m_ArmSubsystem.setArm2Power(-0.5), m_ArmSubsystem)); 
+            () -> m_ArmSubsystem.setArm2Power(-0.3), m_ArmSubsystem)); 
 
     new JoystickButton(m_driverController2, ControlConstants.kYButton)
         .whileTrue(new RunCommand(

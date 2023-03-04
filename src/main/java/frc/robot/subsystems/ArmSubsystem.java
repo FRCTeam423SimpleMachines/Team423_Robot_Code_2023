@@ -69,7 +69,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setArm2Power(double pow) {
     if (armSfty) {
-      //m_arm2.set(pow);
+      m_arm2.set(pow);
     } else {
       m_arm2.set(0.0);
     }
