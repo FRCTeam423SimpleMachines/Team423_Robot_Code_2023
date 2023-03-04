@@ -17,21 +17,21 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstansts;
+import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
-  private final WPI_TalonFX m_arm1 = new WPI_TalonFX(ArmConstansts.kArm1CanId);
-  private final CANSparkMax m_arm2 = new CANSparkMax(ArmConstansts.kArm2CanId, MotorType.kBrushless);
+  private final WPI_TalonFX m_arm1 = new WPI_TalonFX(ArmConstants.kArm1CanId);
+  private final CANSparkMax m_arm2 = new CANSparkMax(ArmConstants.kArm2CanId, MotorType.kBrushless);
 
-  private DutyCycleEncoder m_arm1Encoder = new DutyCycleEncoder(ArmConstansts.kArm1EncoderChannel);
-  private DutyCycleEncoder m_arm2Encoder = new DutyCycleEncoder(ArmConstansts.kArm2EncoderChannel);
+  private DutyCycleEncoder m_arm1Encoder = new DutyCycleEncoder(ArmConstants.kArm1EncoderChannel);
+  private DutyCycleEncoder m_arm2Encoder = new DutyCycleEncoder(ArmConstants.kArm2EncoderChannel);
 
-  private final TrapezoidProfile.Constraints m_arm1Constraints = new TrapezoidProfile.Constraints(ArmConstansts.kArm1MaxVelocity, ArmConstansts.kArm1MaxAcceleration);
-  private final TrapezoidProfile.Constraints m_arm2Constraints = new TrapezoidProfile.Constraints(ArmConstansts.kArm2MaxVelocity, ArmConstansts.kArm2MaxAcceleration);
+  private final TrapezoidProfile.Constraints m_arm1Constraints = new TrapezoidProfile.Constraints(ArmConstants.kArm1MaxVelocity, ArmConstants.kArm1MaxAcceleration);
+  private final TrapezoidProfile.Constraints m_arm2Constraints = new TrapezoidProfile.Constraints(ArmConstants.kArm2MaxVelocity, ArmConstants.kArm2MaxAcceleration);
   
-  private final ProfiledPIDController m_arm1Controller = new ProfiledPIDController(ArmConstansts.kArm1P, ArmConstansts.kArm1I, ArmConstansts.kArm1D, m_arm1Constraints);
-  private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstansts.kArm2P, ArmConstansts.kArm2I, ArmConstansts.kArm2D, m_arm2Constraints);
+  private final ProfiledPIDController m_arm1Controller = new ProfiledPIDController(ArmConstants.kArm1P, ArmConstants.kArm1I, ArmConstants.kArm1D, m_arm1Constraints);
+  private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstants.kArm2P, ArmConstants.kArm2I, ArmConstants.kArm2D, m_arm2Constraints);
 
   private ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
   private GenericEntry arm1Dist = armTab.add("Arm 1 Distance", m_arm1Encoder.getDistance()).getEntry();
@@ -51,8 +51,8 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm1Encoder.setDistancePerRotation(360);
     m_arm2Encoder.setDistancePerRotation(360);
 
-    m_arm1Encoder.setPositionOffset(ArmConstansts.kArm1EncoderAngleOffset);
-    m_arm2Encoder.setPositionOffset(ArmConstansts.kArm2EncoderAngleOffset);
+    //m_arm1Encoder.setPositionOffset(ArmConstants.kArm1EncoderAngleOffset);
+    //m_arm2Encoder.setPositionOffset(ArmConstants.kArm2EncoderAngleOffset);
 
     //Shuffleboard.getTab("Arm Subsystem").add("Arm 1 Encoder", m_arm1Encoder);
     
@@ -62,7 +62,7 @@ public class ArmSubsystem extends SubsystemBase {
     if (armSfty) {
       m_arm1.set(pow);
     } else {
-      //m_arm1.set(0.0);
+      m_arm1.set(0.0);
     }
 
   }
@@ -71,37 +71,37 @@ public class ArmSubsystem extends SubsystemBase {
     if (armSfty) {
       m_arm2.set(pow);
     } else {
-      //m_arm2.set(0.0);
+      m_arm2.set(0.0);
     }
   }
 
   public void updateArmsPos() {
-    //setArm1Power(m_arm1Controller.calculate(m_arm1Encoder.getDistance()));
-    //setArm2Power(m_arm2Controller.calculate(m_arm1Encoder.getDistance()));
+    setArm1Power(m_arm1Controller.calculate(m_arm1Encoder.getDistance()));
+    setArm2Power(m_arm2Controller.calculate(m_arm2Encoder.getDistance()));
   }
   
   public void setArm1Pos(double pos) {
-    if (pos < ArmConstansts.kArm1MinAngle) {
-      pos = ArmConstansts.kArm1MinAngle;
+    if (pos + ArmConstants.kArm1EncoderAngleOffset < ArmConstants.kArm1MinAngle) {
+      pos = ArmConstants.kArm1MinAngle;
     }
 
-    if (pos > ArmConstansts.kArm1MaxAngle) {
-      pos = ArmConstansts.kArm1MaxAngle;
+    if (pos + ArmConstants.kArm1EncoderAngleOffset> ArmConstants.kArm1MaxAngle) {
+      pos = ArmConstants.kArm1MaxAngle;
     }
 
     m_arm1Controller.setGoal(pos);
   }
 
   public void setArm2Pos(double pos) {
-    if (pos < ArmConstansts.kArm2MinAngle) {
-      pos = ArmConstansts.kArm2MinAngle;
+    if (pos + ArmConstants.kArm2EncoderAngleOffset< ArmConstants.kArm2MinAngle) {
+      pos = ArmConstants.kArm2MinAngle;
     }
 
-    if (pos > ArmConstansts.kArm2MaxAngle) {
-      pos = ArmConstansts.kArm2MaxAngle;
+    if (pos + ArmConstants.kArm2EncoderAngleOffset> ArmConstants.kArm2MaxAngle) {
+      pos = ArmConstants.kArm2MaxAngle;
     }
 
-    m_arm1Controller.setGoal(pos);
+    m_arm2Controller.setGoal(pos);
   }
 
   @Override
@@ -129,5 +129,10 @@ public class ArmSubsystem extends SubsystemBase {
   public void setArmPower(double i, double j) {
     setArm1Power(i);
     setArm2Power(j);
+  }
+
+  public void setArmPos(double i, double j){
+    setArm1Pos(i);
+    setArm2Pos(j);
   }
 }
