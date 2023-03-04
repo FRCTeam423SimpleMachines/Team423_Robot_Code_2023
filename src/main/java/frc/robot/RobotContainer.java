@@ -4,15 +4,20 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoNothingAuton;
 import frc.robot.commands.DriveAuton;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.TrajectoryAuton;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.balanceAuton.BalanceAuton;
 import frc.robot.commands.balanceAuton.BalancePath1;
 import frc.robot.commands.balanceAuton.BalancePath2;
 import frc.robot.subsystems.DriveSubsystem;
+
+import java.util.ResourceBundle.Control;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -32,12 +37,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
+  private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
 
   // A chooser for autonomous commands
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+  Joystick m_driverController2 = new Joystick(OIConstants.kDriverControllerPort+1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -61,6 +68,13 @@ public class RobotContainer {
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
           MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
           true, false, true), m_DriveSubsystem));
+
+    m_ArmSubsystem.setDefaultCommand(
+      new RunCommand(
+        () -> m_ArmSubsystem.setArmPower(0,0),
+        m_ArmSubsystem
+        )
+    );
   }
 
   /**
@@ -91,6 +105,22 @@ public class RobotContainer {
             MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
             MathUtil.applyDeadband(-0.5*squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
             true, false, true), m_DriveSubsystem));
+
+    new JoystickButton(m_driverController2, ControlConstants.kAButton)
+        .whileTrue(new RunCommand(
+          () -> m_ArmSubsystem.setArm2Power(0.3), m_ArmSubsystem));
+
+    new JoystickButton(m_driverController2, ControlConstants.kXButton)
+          .whileTrue(new RunCommand(
+            () -> m_ArmSubsystem.setArm2Power(-0.3), m_ArmSubsystem)); 
+
+    new JoystickButton(m_driverController2, ControlConstants.kYButton)
+        .whileTrue(new RunCommand(
+          () -> m_ArmSubsystem.setArm1Power(1.0), m_ArmSubsystem));
+
+    new JoystickButton(m_driverController2, ControlConstants.kBButton)
+        .whileTrue(new RunCommand(
+          () -> m_ArmSubsystem.setArm1Power(-1.0), m_ArmSubsystem));
 
 /* 
     new JoystickButton(m_driverController, Constants.ControlConstants.kLeftBumber)

@@ -147,8 +147,59 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
+  public static final class ArmConstants {
+    public static final int kArm1CanId = 20;
+    public static final int kArm2CanId = 21;
+    
+    public static final int kArm1EncoderChannel = 0;
+    public static final int kArm2EncoderChannel = 1;
+
+    public static final double kArm1MaxVelocity = 1.75;
+    public static final double kArm1MaxAcceleration = 0.75;
+
+    public static final double kArm2MaxVelocity = 1.75;
+    public static final double kArm2MaxAcceleration = 0.75;
+    
+    public static final double kArm1P = 1;
+    public static final double kArm1I = 0;
+    public static final double kArm1D = 0;
+
+    public static final double kArm2P = 1;
+    public static final double kArm2I = 0;
+    public static final double kArm2D = 0;
+
+    public static final double kArm1S = 0;
+    public static final double kArm1G = 0;
+    public static final double kArm1V = 0;
+    public static final double kArm1A = 0;
+
+    public static final double kArm2S = 0;
+    public static final double kArm2G = 0;
+    public static final double kArm2V = 0;
+    public static final double kArm2A = 0;
+
+    public static final double kArm1Length = 33; //inches
+    public static final double kArm2Length = 26; //inches
+    public static final double kArm1VerticalOffset = 13.75; //inches
+    public static final double kArm1HorizontalOffset = 18; //inches
+
+    public static final double kArm1MinAngle = 30;
+    public static final double kArm1MaxAngle = 120;
+    
+    public static final double kArm2MinAngle = -58;
+    public static final double kArm2MaxAngle = 130;
+    
+    public static final double kArm1EncoderAngleOffset = -310;
+    public static final double kArm2EncoderAngleOffset = -275;
+
+    public static final double kArm1StartingAngle = 110;
+    public static final double kArm2StartingAngle = -58;
+    
+  }
+
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kDriver2ControllerPort = 0;
   }
 
   public static final class AutoConstants {
