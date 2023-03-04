@@ -186,11 +186,14 @@ public final class Constants {
     public static final double kArm1MinAngle = 30;
     public static final double kArm1MaxAngle = 120;
     
-    public static final double kArm2MinAngle = 32;
-    public static final double kArm2MaxAngle = 220;
+    public static final double kArm2MinAngle = -58;
+    public static final double kArm2MaxAngle = 130;
     
-    public static final double kArm1EncoderAngleOffset = 47;
+    public static final double kArm1EncoderAngleOffset = -310;
     public static final double kArm2EncoderAngleOffset = 0;
+
+    public static final double kArm1StartingAngle = 110;
+    public static final double kArm2StartingAngle = -58;
     
   }
 

@@ -69,7 +69,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setArm2Power(double pow) {
     if (armSfty) {
-      m_arm2.set(pow);
+      //m_arm2.set(pow);
     } else {
       m_arm2.set(0.0);
     }
@@ -107,7 +107,7 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateArmsPos();
+    //updateArmsPos();
     
     //SmartDashboard.putNumber("Arm/Arm 1 Position", m_arm1Encoder.getDistance());
     //SmartDashboard.putData("Arm 1 Encoder", m_arm1Encoder);
