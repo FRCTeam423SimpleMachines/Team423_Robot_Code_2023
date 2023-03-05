@@ -51,6 +51,9 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm1Encoder.setDistancePerRotation(360);
     m_arm2Encoder.setDistancePerRotation(360);
 
+    m_arm1Controller.setGoal(ArmConstants.kArm1StartingAngle);
+    m_arm2Controller.setGoal(ArmConstants.kArm2StartingAngle);
+
     //m_arm1Encoder.setPositionOffset(ArmConstants.kArm1EncoderAngleOffset);
     //m_arm2Encoder.setPositionOffset(ArmConstants.kArm2EncoderAngleOffset);
 
@@ -75,17 +78,25 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
+  public void updateArm1Pos(){
+    setArm1Power(m_arm1Controller.calculate(getArm1Angle()));    
+  }
+
+  public void updateArm2Pos(){
+    setArm2Power(m_arm2Controller.calculate(getArm2Angle()));
+  }
+
   public void updateArmsPos() {
-    setArm1Power(m_arm1Controller.calculate(m_arm1Encoder.getDistance()));
-    setArm2Power(m_arm2Controller.calculate(m_arm2Encoder.getDistance()));
+    updateArm1Pos();
+    updateArm2Pos();
   }
   
   public void setArm1Pos(double pos) {
-    if (pos + ArmConstants.kArm1EncoderAngleOffset < ArmConstants.kArm1MinAngle) {
+    if (pos < ArmConstants.kArm1MinAngle) {
       pos = ArmConstants.kArm1MinAngle;
     }
 
-    if (pos + ArmConstants.kArm1EncoderAngleOffset> ArmConstants.kArm1MaxAngle) {
+    if (pos > ArmConstants.kArm1MaxAngle) {
       pos = ArmConstants.kArm1MaxAngle;
     }
 
@@ -93,11 +104,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArm2Pos(double pos) {
-    if (pos + ArmConstants.kArm2EncoderAngleOffset< ArmConstants.kArm2MinAngle) {
+    if (pos < ArmConstants.kArm2MinAngle) {
       pos = ArmConstants.kArm2MinAngle;
     }
 
-    if (pos + ArmConstants.kArm2EncoderAngleOffset> ArmConstants.kArm2MaxAngle) {
+    if (pos > ArmConstants.kArm2MaxAngle) {
       pos = ArmConstants.kArm2MaxAngle;
     }
 
@@ -134,5 +145,13 @@ public class ArmSubsystem extends SubsystemBase {
   public void setArmPos(double i, double j){
     setArm1Pos(i);
     setArm2Pos(j);
+  }
+
+  public double getArm1Angle(){
+    return m_arm1Encoder.getDistance() + ArmConstants.kArm1EncoderAngleOffset;
+  }
+
+  public double getArm2Angle(){
+    return m_arm2Encoder.getDistance() + ArmConstants.kArm2EncoderAngleOffset;
   }
 }

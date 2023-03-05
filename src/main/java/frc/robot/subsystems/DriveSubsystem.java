@@ -106,6 +106,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Drive/Gyro Angle", -m_gyro.getAngle());
     SmartDashboard.putNumber("Drive/Pose Angle", getHeading());
     SmartDashboard.putNumber("Drive/Front Left", m_frontLeft.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("Drive/Yaw", m_gyro.getYaw());
+    SmartDashboard.putNumber("Drive/Pitch Angle", m_gyro.getPitch());
     Shuffleboard.update();
     
   }
@@ -293,6 +295,14 @@ public class DriveSubsystem extends SubsystemBase {
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.reset();
+  }
+
+  public double getYaw(){
+    return m_gyro.getYaw();
+  }
+
+  public double getPitch(){
+    return m_gyro.getPitch();
   }
 
   /**

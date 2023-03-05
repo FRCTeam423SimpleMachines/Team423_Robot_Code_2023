@@ -17,7 +17,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveDistance {
 
-    public static SwerveControllerCommand returnController(double distance, DriveSubsystem m_DriveSubsystem){
+    public static SwerveControllerCommand returnController(DriveSubsystem m_DriveSubsystem){
             // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -32,7 +32,7 @@ public class DriveDistance {
         // Pass through these two interior waypoints, making an 's' curve path
         List.of(new Translation2d(1, 0), new Translation2d(2, 0)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(distance, 0, new Rotation2d(0)),
+        new Pose2d(5.6, 0, new Rotation2d(0)),
         config);
 
     ProfiledPIDController thetaController = new ProfiledPIDController(

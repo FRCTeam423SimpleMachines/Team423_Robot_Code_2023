@@ -28,6 +28,7 @@ public class BalanceAuton extends SequentialCommandGroup {
         new InstantCommand(() -> m_DriveSubsystem.drive(0, 0, 0, false, false, true)),
         new InstantCommand(() -> m_DriveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
         smartServeController2,
+        new BalancePID(m_DriveSubsystem),
         new InstantCommand(() -> m_DriveSubsystem.drive(0, 0, 0, false, false, true))
 
     );
