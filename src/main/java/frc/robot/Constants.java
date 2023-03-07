@@ -147,7 +147,7 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
-  public static final class ArmConstansts {
+  public static final class ArmConstants {
     public static final int kArm1CanId = 20;
     public static final int kArm2CanId = 21;
     
@@ -186,16 +186,20 @@ public final class Constants {
     public static final double kArm1MinAngle = 30;
     public static final double kArm1MaxAngle = 120;
     
-    public static final double kArm2MinAngle = 32;
-    public static final double kArm2MaxAngle = 220;
+    public static final double kArm2MinAngle = -58;
+    public static final double kArm2MaxAngle = 130;
     
-    public static final double kArm1EncoderAngleOffset = 0;
-    public static final double kArm2EncoderAngleOffset = 0;
+    public static final double kArm1EncoderAngleOffset = -310;
+    public static final double kArm2EncoderAngleOffset = -275;
+
+    public static final double kArm1StartingAngle = 110;
+    public static final double kArm2StartingAngle = -58;
     
   }
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kDriver2ControllerPort = 0;
   }
 
   public static final class AutoConstants {
@@ -211,6 +215,36 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+
+    //Feild distances in meters (described)
+    /*
+    (all measurements with endpoints on the charging station are calculated for balancing)
+    - Edge of community to mid-field (TBx) - 85.13in/2.162302m
+    - End-scoring node to directly across from pre-placed mid-field cargo (TBy) - 16in/0.4064m
+    - Middle-scoring node to directly across from pre-placed mid-field cargo (TBy) - 6in/0.1524m
+    - Scoring node to mid-field cargo (TBx) - 224in/5.6896m
+    - Scoring node to charging station (Mx) - 60.69in/1.541526m
+    - Inner edge of charging station to mid-field cargo (Mx) - 163.31in/4.148074m
+    - Middle scoring node to pre-placed mid-field cargo (Mx) - 222.32in/5.646928m
+    - Edge of community to balanced on charging station (Mx) - 51in/1.2954m
+    - Middle scoring node to edge of community (charging station) (Mx) - 137.19in/3.484626m
+    - Middle scoring node to right across from pre-placed mid-field cargo 2 (My) - 24in/0.6096m
+    - Middle scoring node to right across from pre-placed mid-field cargo 3 (My) - 24in/0.6096m
+    - Mid-field cargo to charging station - middle (Mx) - 136.13in/3.457702m
+    */
+    //Feild distances in meters (initialized)
+    public static final double kCommunityToMidTBx = 2.16230;
+    public static final double kEndNodeToMidCargoTBy = 0.4064;
+    public static final double kMidNodeToMidCargoTBy = 0.1524;
+    public static final double kNodeToMidCargoTBx = 5.6896;
+    public static final double kNodeToChargeMx = 1.541526;
+    public static final double kInnerChargeToMidCargoMx = 4.148074;
+    public static final double kMidNodeToMidCargoMx = 5.646928;
+    public static final double kEdgeCommunityToChargeMx = 1.2954;
+    public static final double kMidNodeToCommunityEdgeMx = 3.484626;
+    public static final double kMidNodeToMidCargosMy = 0.6096;
+    public static final double kMidCargoToChargeM = 3.457702;
   }
 
   public static final class NeoMotorConstants {
