@@ -30,11 +30,11 @@ public class ArmSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_arm1Controller = new ProfiledPIDController(ArmConstansts.kArm1P, ArmConstansts.kArm1I, ArmConstansts.kArm1D, m_arm1Constraints);
   private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstansts.kArm2P, ArmConstansts.kArm2I, ArmConstansts.kArm2D, m_arm2Constraints);
 
-  private ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
-  private GenericEntry arm1Dist = armTab.add("Arm 1 Distance", m_arm1Encoder.getDistance()).getEntry();
-  private GenericEntry arm1Connect = armTab.add("Arm 1 Connected", m_arm1Encoder.isConnected()).getEntry();
-  private GenericEntry arm2Dist = armTab.add("Arm 2 Distance", m_arm2Encoder.getDistance()).getEntry();
-  private GenericEntry arm2Connect = armTab.add("Arm 2 Connected", m_arm2Encoder.isConnected()).getEntry();
+  private ShuffleboardTab armTab;
+  private GenericEntry arm1Dist;
+  private GenericEntry arm1Connect ;
+  private GenericEntry arm2Dist;
+  private GenericEntry arm2Connect ;
 
   private boolean armSfty = true;
   GenericEntry armSafety = Shuffleboard.getTab("Safeties").add("Arm Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
@@ -51,7 +51,11 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm1Encoder.setPositionOffset(ArmConstansts.kArm1EncoderAngleOffset);
     m_arm2Encoder.setPositionOffset(ArmConstansts.kArm2EncoderAngleOffset);
 
-    //Shuffleboard.getTab("Arm Subsystem").add("Arm 1 Encoder", m_arm1Encoder);
+    armTab = Shuffleboard.getTab("Arm");
+    arm1Dist = armTab.add("Arm 1 Distance", m_arm1Encoder.getDistance()).getEntry();
+    arm1Connect = armTab.add("Arm 1 Connected", m_arm1Encoder.isConnected()).getEntry();
+    arm2Dist = armTab.add("Arm 2 Distance", m_arm2Encoder.getDistance()).getEntry();
+    arm2Connect = armTab.add("Arm 2 Connected", m_arm2Encoder.isConnected()).getEntry();
     
   }
 
@@ -106,20 +110,20 @@ public class ArmSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     updateArmsPos();
     
-    //SmartDashboard.putNumber("Arm/Arm 1 Position", m_arm1Encoder.getDistance());
-    //SmartDashboard.putData("Arm 1 Encoder", m_arm1Encoder);
-    arm1Dist.setDouble(m_arm1Encoder.getDistance());
-    arm1Connect.setBoolean(m_arm1Encoder.isConnected());
-    arm2Dist.setDouble(m_arm2Encoder.getDistance());
-    arm2Connect.setBoolean(m_arm2Encoder.isConnected());
-    Shuffleboard.update();
-
     armSfty = armSafety.getBoolean(true);
     
+    logToDashboard();
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  public void logToDashboard() {
+    arm1Dist.setDouble(m_arm1Encoder.getDistance());
+    arm1Connect.setBoolean(m_arm1Encoder.isConnected());
+    arm2Dist.setDouble(m_arm2Encoder.getDistance());
+    arm2Connect.setBoolean(m_arm2Encoder.isConnected());
   }
 }
