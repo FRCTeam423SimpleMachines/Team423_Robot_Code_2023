@@ -1,41 +1,66 @@
 package frc.robot.commands.arm;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class MoveArm2Pos extends CommandBase{
+public class MoveArm2Pos extends ProfiledPIDCommand{
 
+  
     ArmSubsystem m_armsubsystem;
-    double goal;
+    private int count = 0;
 
-    public MoveArm2Pos(double angle, ArmSubsystem arm){
-        goal = angle;
-        arm.setArm2Pos(angle);
-        addRequirements(arm);
+    public MoveArm2Pos(double angle, ArmSubsystem arm2){
+
+        super(
+            new ProfiledPIDController(
+                ArmConstants.kArm2P,
+                ArmConstants.kArm2I,
+                ArmConstants.kArm2D,
+                new TrapezoidProfile.Constraints(
+                    ArmConstants.kArm2MaxVelocity,
+                    ArmConstants.kArm2MaxAcceleration
+                )
+            ),
+            () -> arm2.getArm2Angle(),
+            angle,
+            (output, setpoint) -> arm2.setArm2Power(output),
+            arm2
+        );
+
+        m_armsubsystem = arm2;
+        getController().enableContinuousInput(-180, 180);
+
+        getController().setTolerance(5.0);
+
+
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {}
     
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        m_armsubsystem.updateArm2Pos();
-    }
 
     // Called once the command ends or is interrupted.
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        
+        super.end(interrupted);
+        //m_armsubsystem.setArm2Pos(0.0);
+    }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        double currentAngle = m_armsubsystem.getArm2Angle();
-        if ((currentAngle - goal) > -5 && (currentAngle - goal) < 5){
-            return true;
-        } else {
-            return false;
-        }
+        if (getController().atGoal()) {
+            count++;
+          } else {
+            count = 0;
+          }
+      
+        return count > 10;
     }
 
 }

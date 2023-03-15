@@ -9,11 +9,14 @@ public class Balance extends CommandBase{
 
     DriveSubsystem m_DriveSubsystem;
     int counter;
+    int initialRun;
     double pitch;
+    double initialPitch;
     
     public Balance (DriveSubsystem DriveSubsystem){
         m_DriveSubsystem = DriveSubsystem;
         counter = 0;
+        initialRun = 0;
         addRequirements(m_DriveSubsystem);
     }
 
@@ -25,17 +28,25 @@ public class Balance extends CommandBase{
     @Override
     public void execute() {
         pitch = m_DriveSubsystem.getPitch();
+        if (initialRun == 0){
+            initialPitch = pitch;
+        }
 
-        if (pitch < -3 ){
+        double pitchDiff = Math.abs(pitch) - Math.abs(initialPitch);
+
+        if (pitch < -4 && pitchDiff < 6){
             counter = 0;
-            m_DriveSubsystem.drive(0.075, 0, 0, true, false);
-        } else if (pitch > 4 ){
+            m_DriveSubsystem.drive(0.07, 0, 0, true, false);
+        } else if (pitch > 4 && pitchDiff < 6 ){
             counter = 0;
-            m_DriveSubsystem.drive(-0.075, 0, 0, true, false);
+            m_DriveSubsystem.drive(-0.07, 0, 0, true, false);
         } else {
             counter ++;
-            m_DriveSubsystem.drive(0, 0, 0, true, false);
+            //m_DriveSubsystem.drive(0, 0, 0, true, false);
+            m_DriveSubsystem.setX();
         }
+
+        initialRun++;
     }
 
     // Called once the command ends or is interrupted.
@@ -44,7 +55,7 @@ public class Balance extends CommandBase{
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (counter >= 5){
+        if (counter >= 15){
             return true;
         } else {
             return false;

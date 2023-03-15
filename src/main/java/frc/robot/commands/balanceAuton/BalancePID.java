@@ -18,7 +18,7 @@ public class BalancePID extends ProfiledPIDCommand{
 
     DriveSubsystem m_drive;
     private int count = 0;
-    private double p = 1;
+    private double p = 3;
     private double i = 0;
     private double d = 0.5;
 
@@ -26,7 +26,7 @@ public class BalancePID extends ProfiledPIDCommand{
 
         super(
             new ProfiledPIDController(
-                1, 
+                3, 
                 0,
                 0.5, 
                 new TrapezoidProfile.Constraints(

@@ -34,13 +34,20 @@ public class ArmSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstants.kArm2P, ArmConstants.kArm2I, ArmConstants.kArm2D, m_arm2Constraints);
 
   private ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
-  private GenericEntry arm1Dist = armTab.add("Arm 1 Distance", m_arm1Encoder.getDistance()).getEntry();
+  private GenericEntry arm1Dist = armTab.add("Arm 1 Distance", getArm1Angle()).getEntry();
+  private GenericEntry arm1RawDist = armTab.add("Arm 1 Raw Distance", getArm1RawAngle()).getEntry();
   private GenericEntry arm1Connect = armTab.add("Arm 1 Connected", m_arm1Encoder.isConnected()).getEntry();
-  private GenericEntry arm2Dist = armTab.add("Arm 2 Distance", m_arm2Encoder.getDistance()).getEntry();
+  private GenericEntry arm2Dist = armTab.add("Arm 2 Distance", getArm2Angle()).getEntry();
+  private GenericEntry arm2RawDist = armTab.add("Arm 2 Raw Distance", getArm2RawAngle()).getEntry();
   private GenericEntry arm2Connect = armTab.add("Arm 2 Connected", m_arm2Encoder.isConnected()).getEntry();
+  private GenericEntry arm2Power = armTab.add("Arm 2 Power", m_arm2.getOutputCurrent()).getEntry();
+  
 
   private boolean armSfty = true;
   GenericEntry armSafety = Shuffleboard.getTab("Safeties").add("Arm Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
+
+  private double arm1EncoderOffset;
+  private double arm2EncoderOffset;
 
   //ArmFeedforward arm1Feedforward = new ArmFeedforward(ArmConstansts.kArm1S,ArmConstansts.kArm1G,ArmConstansts.kArm1V,ArmConstansts.kArm1A);
   //ArmFeedforward arm2Feedforward = new ArmFeedforward(ArmConstansts.kArm2S,ArmConstansts.kArm2G,ArmConstansts.kArm2V,ArmConstansts.kArm2A);
@@ -50,6 +57,19 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_arm1Encoder.setDistancePerRotation(360);
     m_arm2Encoder.setDistancePerRotation(360);
+
+
+    if (m_arm1Encoder.getDistance() > 270){
+      arm1EncoderOffset = ArmConstants.kArm1EncoderAngleOffset - 360;
+    } else {
+      arm1EncoderOffset = ArmConstants.kArm1EncoderAngleOffset;
+    }
+
+    if (m_arm2Encoder.getDistance() > 200){
+      arm2EncoderOffset = ArmConstants.kArm2EncoderAngleOffset - 360;
+    } else {
+      arm2EncoderOffset = ArmConstants.kArm2EncoderAngleOffset;
+    }    
 
     m_arm1Controller.setGoal(ArmConstants.kArm1StartingAngle);
     m_arm2Controller.setGoal(ArmConstants.kArm2StartingAngle);
@@ -63,7 +83,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setArm1Power(double pow) {
     if (armSfty) {
-      m_arm1.set(pow);
+      if (Math.abs(pow) <= .4)
+        m_arm1.set(pow);
+      else
+        if (pow > .4)
+          m_arm1.set(.4);
+        if (pow < -.4)
+          m_arm1.set(-0.4);
     } else {
       m_arm1.set(0.0);
     }
@@ -71,8 +97,15 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArm2Power(double pow) {
+    pow = -pow;
     if (armSfty) {
-      m_arm2.set(pow);
+      if (Math.abs(pow) <= .3)
+        m_arm2.set(pow);
+      else
+        if (pow > .3)
+          m_arm2.set(.3);
+        if (pow < -.3)
+          m_arm2.set(-0.3);
     } else {
       m_arm2.set(0.0);
     }
@@ -83,7 +116,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void updateArm2Pos(){
-    setArm2Power(m_arm2Controller.calculate(getArm2Angle()));
+    setArm2Power(m_arm2Controller.calculate(-getArm2Angle()));
   }
 
   public void updateArmsPos() {
@@ -122,10 +155,15 @@ public class ArmSubsystem extends SubsystemBase {
     
     //SmartDashboard.putNumber("Arm/Arm 1 Position", m_arm1Encoder.getDistance());
     //SmartDashboard.putData("Arm 1 Encoder", m_arm1Encoder);
-    arm1Dist.setDouble(m_arm1Encoder.getDistance());
+    arm1Dist.setDouble(getArm1Angle());
+    arm1RawDist.setDouble(getArm1RawAngle());
     arm1Connect.setBoolean(m_arm1Encoder.isConnected());
-    arm2Dist.setDouble(m_arm2Encoder.getDistance());
+    arm2Dist.setDouble(getArm2Angle());
+    arm2RawDist.setDouble(getArm2RawAngle());    
     arm2Connect.setBoolean(m_arm2Encoder.isConnected());
+    //arm2Power.setDouble(m_arm2.getOutputCurrent());
+    arm2Power.setDouble(m_arm1.getSelectedSensorVelocity());
+    
     Shuffleboard.update();
 
     armSfty = armSafety.getBoolean(true);
@@ -148,10 +186,20 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getArm1Angle(){
-    return m_arm1Encoder.getDistance() + ArmConstants.kArm1EncoderAngleOffset;
+    return m_arm1Encoder.getDistance() + arm1EncoderOffset;
   }
 
   public double getArm2Angle(){
-    return m_arm2Encoder.getDistance() + ArmConstants.kArm2EncoderAngleOffset;
+    return m_arm2Encoder.getDistance() + arm2EncoderOffset;
+  }
+
+
+
+  public double getArm1RawAngle(){
+    return m_arm1Encoder.getDistance();
+  }
+
+  public double getArm2RawAngle(){
+    return m_arm2Encoder.getDistance();
   }
 }
