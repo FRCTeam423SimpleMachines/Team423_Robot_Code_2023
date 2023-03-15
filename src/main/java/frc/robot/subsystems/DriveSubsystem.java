@@ -52,6 +52,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   private double robotAngle = 0;
+  private double rotatingBuffer = 0;
+  private boolean rotating = false;
 
   
   // Slew rate filter variables for controlling lateral acceleration
@@ -91,6 +93,9 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
+    if (rotating){
+      robotAngle = -m_gyro.getAngle();
+    }
     m_odometry.update(
         Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
@@ -101,11 +106,14 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
         drveSfty = driveSafety.getBoolean(true);
+    
         
     
     SmartDashboard.putNumber("Drive/Gyro Angle", -m_gyro.getAngle());
     SmartDashboard.putNumber("Drive/Pose Angle", getHeading());
     SmartDashboard.putNumber("Drive/Front Left", m_frontLeft.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("Drive/Yaw", m_gyro.getYaw());
+    SmartDashboard.putNumber("Drive/Pitch Angle", m_gyro.getPitch());
     Shuffleboard.update();
     
   }
@@ -163,20 +171,6 @@ public class DriveSubsystem extends SubsystemBase {
         
       double xSpeedCommanded;
       double ySpeedCommanded;
-
-      if (rot > Math.pow(0.5*0.3, 2) || rot < -Math.pow(0.5*0.3, 2)){
-        robotAngle = -m_gyro.getAngle();
-      }
-      
-      if (gyroStability == true){
-
-        if (-m_gyro.getAngle() > (5 + robotAngle)){
-          rot += -0.1;
-        } else if (-m_gyro.getAngle() < (robotAngle - 5)){
-          rot += 0.1;
-        }
-
-      }
   
       if (rateLimit) {
         // Convert XY to polar for rate limiting
@@ -225,6 +219,30 @@ public class DriveSubsystem extends SubsystemBase {
         ySpeedCommanded = ySpeed;
         m_currentRotation = rot;
       }
+
+      if (rotating){
+        robotAngle = -m_gyro.getAngle();
+      }
+
+      if (rot > Math.pow(0.5*0.3, 2) || rot < -Math.pow(0.5*0.3, 2)){
+        rotating = true;
+        robotAngle = -m_gyro.getAngle();
+        rotatingBuffer = 0;
+      } if (rotatingBuffer > 10) {
+        rotating = false;
+      }
+      
+      rotatingBuffer++;
+
+      if (gyroStability == true){
+
+        if (-m_gyro.getAngle() > (5 + robotAngle)){
+          m_currentRotation += -0.1;
+        } else if (-m_gyro.getAngle() < (robotAngle - 5)){
+          m_currentRotation += 0.1;
+        }
+
+      }
   
       // Convert the commanded speeds into the correct units for the drivetrain
       double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
@@ -241,6 +259,10 @@ public class DriveSubsystem extends SubsystemBase {
       m_frontRight.setDesiredState(swerveModuleStates[1]);
       m_rearLeft.setDesiredState(swerveModuleStates[2]);
       m_rearRight.setDesiredState(swerveModuleStates[3]);
+
+      if (rotating){
+        robotAngle = -m_gyro.getAngle();
+      }
 
     }
   }
@@ -293,6 +315,14 @@ public class DriveSubsystem extends SubsystemBase {
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.reset();
+  }
+
+  public double getYaw(){
+    return m_gyro.getYaw();
+  }
+
+  public double getPitch(){
+    return m_gyro.getPitch();
   }
 
   /**

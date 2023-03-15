@@ -53,8 +53,8 @@ public final class Constants {
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     public static final double kDirectionSlewRate = 1.2; // radians per second
-    public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
-    public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+    public static final double kMagnitudeSlewRate = 1.3; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 1.0; // percent per second (1 = 100%)
 
     public static final double kDriveBaseWidth = 24; //inches
     public static final double kDriveBaseLength = 30; //inches
@@ -140,8 +140,8 @@ public final class Constants {
     public static final double kTurningMinOutput = -1;
     public static final double kTurningMaxOutput = 1;
 
-    public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
-    public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
+    public static final IdleMode kDrivingMotorIdleMode = IdleMode.kCoast;
+    public static final IdleMode kTurningMotorIdleMode = IdleMode.kCoast;
 
     public static final int kDrivingMotorCurrentLimit = 50; // amps
     public static final int kTurningMotorCurrentLimit = 20; // amps
@@ -154,19 +154,19 @@ public final class Constants {
     public static final int kArm1EncoderChannel = 0;
     public static final int kArm2EncoderChannel = 1;
 
-    public static final double kArm1MaxVelocity = 1.75;
-    public static final double kArm1MaxAcceleration = 0.75;
+    public static final double kArm1MaxVelocity = 5;
+    public static final double kArm1MaxAcceleration = 2;
 
-    public static final double kArm2MaxVelocity = 1.75;
-    public static final double kArm2MaxAcceleration = 0.75;
+    public static final double kArm2MaxVelocity = 3;
+    public static final double kArm2MaxAcceleration = 1;
     
-    public static final double kArm1P = 1;
+    public static final double kArm1P = .1;
     public static final double kArm1I = 0;
-    public static final double kArm1D = 0;
+    public static final double kArm1D = 0.4;
 
-    public static final double kArm2P = 1;
-    public static final double kArm2I = 0;
-    public static final double kArm2D = 0;
+    public static final double kArm2P = .1;
+    public static final double kArm2I = 0.001;
+    public static final double kArm2D = 0.4;
 
     public static final double kArm1S = 0;
     public static final double kArm1G = 0;
@@ -189,8 +189,8 @@ public final class Constants {
     public static final double kArm2MinAngle = -58;
     public static final double kArm2MaxAngle = 130;
     
-    public static final double kArm1EncoderAngleOffset = -310;
-    public static final double kArm2EncoderAngleOffset = -275;
+    public static final double kArm1EncoderAngleOffset = 40;
+    public static final double kArm2EncoderAngleOffset = 85;
 
     public static final double kArm1StartingAngle = 110;
     public static final double kArm2StartingAngle = -58;

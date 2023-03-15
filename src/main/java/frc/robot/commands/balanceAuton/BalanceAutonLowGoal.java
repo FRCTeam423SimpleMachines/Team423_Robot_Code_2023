@@ -4,6 +4,9 @@
 
 package frc.robot.commands.balanceAuton;
 
+import frc.robot.Constants.ArmConstants;
+import frc.robot.commands.arm.MoveArm1Pos;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 /** An example command that uses an example subsystem. */
-public class BalanceAuton extends SequentialCommandGroup {
+public class BalanceAutonLowGoal extends SequentialCommandGroup {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   /**
@@ -21,15 +24,17 @@ public class BalanceAuton extends SequentialCommandGroup {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public BalanceAuton(DriveSubsystem m_DriveSubsystem, SwerveControllerCommand smartSwerveController, SwerveControllerCommand smartServeController2) {
+  public BalanceAutonLowGoal(DriveSubsystem m_DriveSubsystem, ArmSubsystem m_ArmSubsystem, SwerveControllerCommand smartSwerveController, SwerveControllerCommand smartServeController2) {
     super(
+        new MoveArm1Pos(90, m_ArmSubsystem),
+        new MoveArm1Pos(ArmConstants.kArm1StartingAngle, m_ArmSubsystem),
         new InstantCommand(() -> m_DriveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
         smartSwerveController,
-        //new InstantCommand(() -> m_DriveSubsystem.drive(0, 0, 0, false, false, true)),
-        //new InstantCommand(() -> m_DriveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
-        //smartServeController2,
-        new Balance(m_DriveSubsystem)
-        //new InstantCommand(() -> m_DriveSubsystem.drive(0, 0, 0, false, false, true))
+        new InstantCommand(() -> m_DriveSubsystem.drive(0, 0, 0, false, false, true)),
+        new InstantCommand(() -> m_DriveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
+        smartServeController2,
+        new BalancePID(m_DriveSubsystem),
+        new InstantCommand(() -> m_DriveSubsystem.drive(0, 0, 0, false, false, true))
 
     );
 
