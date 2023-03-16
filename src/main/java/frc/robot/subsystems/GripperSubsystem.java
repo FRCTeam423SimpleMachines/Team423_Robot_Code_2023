@@ -5,10 +5,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
@@ -26,47 +22,12 @@ public class GripperSubsystem extends SubsystemBase {
   public GripperSubsystem() {
     
     m_wristMotor = new CANSparkMax(GripperConstants.kWristMotorCanID, GripperConstants.kWristMotorType);
-
-    // Factory reset, so we get the SPARKS MAX to a known state before configuring
-    // them. This is useful in case a SPARK MAX is swapped out.
-    m_wristMotor.restoreFactoryDefaults();
-
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     m_wristEncoder = new DutyCycleEncoder(GripperConstants.kWristEncoderPwmID);
     
-    // Apply position conversion factors for the wrist encoder. The
-    // native units for position are rotations but we want radians
-    //m_wristEncoder.setPositionConversionFactor(GripperConstants.kMotorRotationsToRadians);
-
-    // Invert the turning encoder, since the output shaft rotates in the opposite direction of
-    // the steering motor in the MAXSwerve Module.
-    //m_wristEncoder.setInverted(GripperConstants.kWristEncoderInverted);
-
-    // Enable PID wrap around for the turning motor. This will allow the PID
-    // controller to go through 0 to get to the setpoint i.e. going from 350 degrees
-    // to 10 degrees will go through 0 rather than the other direction which is a
-    // longer route.
-    //m_pidController.setPositionPIDWrappingEnabled(true);
-    //m_pidController.setPositionPIDWrappingMinInput(GripperConstants.kWristEncoderPositionPIDMinInput);
-    //m_pidController.setPositionPIDWrappingMaxInput(GripperConstants.kWristEncoderPositionPIDMaxInput);
-
-    // Set PID parameters
-    /*m_pidController.setI(GripperConstants.kI);
-    m_pidController.setD(GripperConstants.kD);
-    m_pidController.setIZone(GripperConstants.kIz);
-    m_pidController.setFF(GripperConstants.kFF);
-    m_pidController.setOutputRange(GripperConstants.kWristMinSetPoint, GripperConstants.kWristMaxSetPoint);
-    */
-    m_wristMotor.setIdleMode(GripperConstants.kWristMotorIdleMode);
-    m_wristMotor.setSmartCurrentLimit(GripperConstants.kWristMotorCurrentLimit);
-
-    // Save the SPARK MAX configurations. If a SPARK MAX browns out during
-    // operation, it will maintain the above configurations.
-    //m_wristMotor.burnFlash();
-    
-    // Move wrist to initial position
-    //this.setWristAngleRadians(GripperConstants.kWristInitialSetpoint);   
-
+    //m_wristMotor.setIdleMode(GripperConstants.kWristMotorIdleMode);
+    //m_wristMotor.setSmartCurrentLimit(GripperConstants.kWristMotorCurrentLimit);
+   
     // Create a new solenoid for controlling the pneumatic
     m_solenoid = new DoubleSolenoid(GripperConstants.kSolenoidPCMCanId, GripperConstants.kPneumaticsModuleType, 
     GripperConstants.kSolenoidForwardChannel, GripperConstants.kSolenoidReverseChannel);
