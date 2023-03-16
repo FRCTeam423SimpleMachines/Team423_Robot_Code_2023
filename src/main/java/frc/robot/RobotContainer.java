@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoNothingAuton;
 import frc.robot.commands.TrajectoryAuton;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -34,6 +36,7 @@ public class RobotContainer {
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+  Joystick m_driverController2 = new Joystick(OIConstants.kDriverControllerPort +1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -82,6 +85,8 @@ public class RobotContainer {
     .whileTrue(new RunCommand(
         () -> m_GripperSubsystem.moveWrist(-0.5),
         m_GripperSubsystem ));
+
+    new JoystickButton(m_driverController2, ControlConstants.kRightBumber).toggleOnTrue(new InstantCommand(()-> m_GripperSubsystem.activateGripper(), m_GripperSubsystem));
 
 
 

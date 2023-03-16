@@ -115,6 +115,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   public void activateGripper()
   {
+    
     m_solenoid.toggle();
   }
   

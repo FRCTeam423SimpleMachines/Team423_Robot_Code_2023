@@ -232,8 +232,8 @@ public final class Constants {
     public static PneumaticsModuleType kPneumaticsModuleType = PneumaticsModuleType.CTREPCM;
    
     //Assign forward and reverse channels of the solenoid
-    public static final int kSolenoidForwardChannel = 1;
-    public static final int kSolenoidReverseChannel = 2;
+    public static final int kSolenoidForwardChannel = 0;
+    public static final int kSolenoidReverseChannel = 1;
 
     //Assign forward and reverse solenoid ports to gripper states
     public static DoubleSolenoid.Value kGripperOpen = DoubleSolenoid.Value.kForward;
@@ -243,7 +243,7 @@ public final class Constants {
     public static DoubleSolenoid.Value kGripperInitialState = kGripperOpen;
 
     //Assign CAN ID of the Pnuematic Control Module.  By default the system sets this 0
-    public static final int kSolenoidPCMCanId = 9;
+    public static final int kSolenoidPCMCanId = 7;
 
 
 
