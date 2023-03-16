@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
@@ -34,10 +32,14 @@ public class ArmSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstants.kArm2P, ArmConstants.kArm2I, ArmConstants.kArm2D, m_arm2Constraints);
 
   private ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
-  private GenericEntry arm1Dist = armTab.add("Arm 1 Distance", m_arm1Encoder.getDistance()).getEntry();
+  private GenericEntry arm1Dist = armTab.add("Arm 1 Distance", getArm1Angle()).getEntry();
+  private GenericEntry arm1RawDist = armTab.add("Arm 1 Raw Distance", getArm1RawAngle()).getEntry();
   private GenericEntry arm1Connect = armTab.add("Arm 1 Connected", m_arm1Encoder.isConnected()).getEntry();
-  private GenericEntry arm2Dist = armTab.add("Arm 2 Distance", m_arm2Encoder.getDistance()).getEntry();
+  private GenericEntry arm2Dist = armTab.add("Arm 2 Distance", getArm2Angle()).getEntry();
+  private GenericEntry arm2RawDist = armTab.add("Arm 2 Raw Distance", getArm2RawAngle()).getEntry();
   private GenericEntry arm2Connect = armTab.add("Arm 2 Connected", m_arm2Encoder.isConnected()).getEntry();
+  private GenericEntry arm2Power = armTab.add("Arm 2 Power", m_arm2.getOutputCurrent()).getEntry();
+  
 
   private boolean armSfty = true;
   GenericEntry armSafety = Shuffleboard.getTab("Safeties").add("Arm Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
@@ -73,11 +75,7 @@ public class ArmSubsystem extends SubsystemBase {
     //m_arm1Encoder.setPositionOffset(ArmConstants.kArm1EncoderAngleOffset);
     //m_arm2Encoder.setPositionOffset(ArmConstants.kArm2EncoderAngleOffset);
 
-    armTab = Shuffleboard.getTab("Arm");
-    arm1Dist = armTab.add("Arm 1 Distance", m_arm1Encoder.getDistance()).getEntry();
-    arm1Connect = armTab.add("Arm 1 Connected", m_arm1Encoder.isConnected()).getEntry();
-    arm2Dist = armTab.add("Arm 2 Distance", m_arm2Encoder.getDistance()).getEntry();
-    arm2Connect = armTab.add("Arm 2 Connected", m_arm2Encoder.isConnected()).getEntry();
+    //Shuffleboard.getTab("Arm Subsystem").add("Arm 1 Encoder", m_arm1Encoder);
     
   }
 
@@ -155,15 +153,19 @@ public class ArmSubsystem extends SubsystemBase {
     
     //SmartDashboard.putNumber("Arm/Arm 1 Position", m_arm1Encoder.getDistance());
     //SmartDashboard.putData("Arm 1 Encoder", m_arm1Encoder);
-    arm1Dist.setDouble(m_arm1Encoder.getDistance());
+    arm1Dist.setDouble(getArm1Angle());
+    arm1RawDist.setDouble(getArm1RawAngle());
     arm1Connect.setBoolean(m_arm1Encoder.isConnected());
-    arm2Dist.setDouble(m_arm2Encoder.getDistance());
+    arm2Dist.setDouble(getArm2Angle());
+    arm2RawDist.setDouble(getArm2RawAngle());    
     arm2Connect.setBoolean(m_arm2Encoder.isConnected());
+    //arm2Power.setDouble(m_arm2.getOutputCurrent());
+    arm2Power.setDouble(m_arm1.getSelectedSensorVelocity());
+    
     Shuffleboard.update();
 
     armSfty = armSafety.getBoolean(true);
     
-    logToDashboard();
   }
 
   @Override
@@ -171,13 +173,6 @@ public class ArmSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  public void logToDashboard() {
-    arm1Dist.setDouble(m_arm1Encoder.getDistance());
-    arm1Connect.setBoolean(m_arm1Encoder.isConnected());
-    arm2Dist.setDouble(m_arm2Encoder.getDistance());
-    arm2Connect.setBoolean(m_arm2Encoder.isConnected());
-  }
-    
   public void setArmPower(double i, double j) {
     setArm1Power(i);
     setArm2Power(j);
