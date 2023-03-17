@@ -5,11 +5,16 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -23,6 +28,8 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+
 
   public static class ControlConstants {
     public static final int kLeftXAxis= 0;
@@ -94,6 +101,9 @@ public final class Constants {
     
 
     public static final boolean kGyroReversed = false;
+
+    public static enum Direction {FORWARD, REVERSE, LEFT, RIGHT;}
+
   }
 
   public static final class ModuleConstants {
@@ -250,4 +260,74 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public static final class GripperConstants{
+
+    /* 
+     * Wrist Constants
+     */
+
+     public static final MotorType kWristMotorType = MotorType.kBrushless;
+
+     //Assign PWM ID for encoder
+     public static final int kWristEncoderPwmID = 2;
+    
+    //Assign CAN ID of wrist motor
+     public static int kWristMotorCanID = 22;
+
+     // Setpoint in degrees of initial position
+     public static double kWristInitialSetpoint = 0;
+ 
+     // How many radians of movement of the gripper per rotation of the motor
+     public static final double kMotorRotationsToRadians = 2 * Math.PI;
+     // Maximum and minimum range of the wrist
+     public static final double kWristMaxSetPoint = Math.PI/2;
+     public static final double kWristMinSetPoint = -Math.PI/2;
+
+     public static final double kWristEncoderPositionPIDMinInput = 0; // radians
+     public static final double kWristEncoderPositionPIDMaxInput = (2 * Math.PI);
+
+             // PID Variables
+    public static final double kP = 1; 
+    public static final double kI = 0;
+    public static final double kD = 0; 
+    public static final double kIz = 0; 
+    public static final double kFF = 0; 
+
+
+    // Invert the encoder, since the output shaft rotates in the opposite direction of
+    // the steering motor in the MAXSwerve Module.
+    public static final boolean kWristEncoderInverted = true;
+
+    public static final IdleMode kWristMotorIdleMode = IdleMode.kBrake;
+
+    public static final int kWristMotorCurrentLimit = 40; // amps
+ 
+     /*
+      * Gripper constants
+      */
+
+    //There are two options for operating solenoids to control pneumatic cylinders, 
+    //the CTRE Pneumatics Control Module and the REV Robotics Pneumatics Hub
+    //Valid values are "CTREPCM" or "REV"
+    public static PneumaticsModuleType kPneumaticsModuleType = PneumaticsModuleType.CTREPCM;
+   
+    //Assign forward and reverse channels of the solenoid
+    public static final int kSolenoidForwardChannel = 0;
+    public static final int kSolenoidReverseChannel = 1;
+
+    //Assign forward and reverse solenoid ports to gripper states
+    public static DoubleSolenoid.Value kGripperOpen = DoubleSolenoid.Value.kForward;
+    public static DoubleSolenoid.Value kGripperClosed = DoubleSolenoid.Value.kReverse;
+    
+    //Assign initial state of the gripper when created
+    public static DoubleSolenoid.Value kGripperInitialState = kGripperOpen;
+
+    //Assign CAN ID of the Pnuematic Control Module.  By default the system sets this 0
+    public static final int kSolenoidPCMCanId = 7;
+
+
+
+  }
+
 }

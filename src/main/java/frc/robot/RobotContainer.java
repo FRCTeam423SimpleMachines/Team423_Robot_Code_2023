@@ -17,14 +17,14 @@ import frc.robot.commands.balanceAuton.BalanceAutonLowGoal;
 import frc.robot.commands.balanceAuton.BalancePath1;
 import frc.robot.commands.balanceAuton.BalancePath2;
 import frc.robot.subsystems.DriveSubsystem;
-
+import frc.robot.subsystems.GripperSubsystem;
 import java.util.ResourceBundle.Control;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
+  private final GripperSubsystem m_GripperSubsystem = new GripperSubsystem();
   private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
 
   // A chooser for autonomous commands
@@ -78,6 +79,12 @@ public class RobotContainer {
         m_ArmSubsystem
         )
     );
+
+    m_GripperSubsystem.setDefaultCommand(
+      new RunCommand(
+        () -> m_GripperSubsystem.moveWrist(0), 
+        m_GripperSubsystem)
+    );
     
     
   }
@@ -102,6 +109,20 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_DriveSubsystem.resetGyro(),
             m_DriveSubsystem ));
+
+    new JoystickButton(m_driverController, Constants.ControlConstants.kBButton)
+    .whileTrue(new RunCommand(
+        () -> m_GripperSubsystem.moveWrist(0.5),
+        m_GripperSubsystem ));
+
+    new JoystickButton(m_driverController, Constants.ControlConstants.kAButton)
+    .whileTrue(new RunCommand(
+        () -> m_GripperSubsystem.moveWrist(-0.5),
+        m_GripperSubsystem ));
+
+    new JoystickButton(m_driverController, ControlConstants.kLeftBumber).toggleOnTrue(new InstantCommand(()-> m_GripperSubsystem.activateGripper(), m_GripperSubsystem));
+
+
 
     new JoystickButton(m_driverController, Constants.ControlConstants.kRightBumber)
         .whileTrue(new RunCommand(
