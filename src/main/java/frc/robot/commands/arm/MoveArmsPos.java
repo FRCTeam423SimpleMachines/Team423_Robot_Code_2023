@@ -11,6 +11,7 @@ public class MoveArmsPos extends CommandBase{
     public MoveArmsPos(double angle1, double angle2, ArmSubsystem arm){
         goal1 = angle1;
         goal2 = angle2;
+        m_armsubsystem = arm;
         arm.setArmPos(angle1, angle2);
         addRequirements(arm);
     }

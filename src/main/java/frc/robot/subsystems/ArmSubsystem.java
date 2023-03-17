@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
@@ -33,6 +31,9 @@ public class ArmSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_arm1Controller = new ProfiledPIDController(ArmConstants.kArm1P, ArmConstants.kArm1I, ArmConstants.kArm1D, m_arm1Constraints);
   private final ProfiledPIDController m_arm2Controller = new ProfiledPIDController(ArmConstants.kArm2P, ArmConstants.kArm2I, ArmConstants.kArm2D, m_arm2Constraints);
 
+  private double m_arm1ControllerOutput;
+  private double m_arm2ControllerOutput;
+
   private ShuffleboardTab armTab = Shuffleboard.getTab("Arm");
   private GenericEntry arm1Dist = armTab.add("Arm 1 Distance", getArm1Angle()).getEntry();
   private GenericEntry arm1RawDist = armTab.add("Arm 1 Raw Distance", getArm1RawAngle()).getEntry();
@@ -40,7 +41,8 @@ public class ArmSubsystem extends SubsystemBase {
   private GenericEntry arm2Dist = armTab.add("Arm 2 Distance", getArm2Angle()).getEntry();
   private GenericEntry arm2RawDist = armTab.add("Arm 2 Raw Distance", getArm2RawAngle()).getEntry();
   private GenericEntry arm2Connect = armTab.add("Arm 2 Connected", m_arm2Encoder.isConnected()).getEntry();
-  private GenericEntry arm2Power = armTab.add("Arm 2 Power", m_arm2.getOutputCurrent()).getEntry();
+  private GenericEntry arm2Power = armTab.add("Arm 2 Power", 0.0).getEntry();
+  private GenericEntry arm1Power = armTab.add("Arm 1 Power",0.0).getEntry();
   
 
   private boolean armSfty = true;
@@ -112,11 +114,15 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void updateArm1Pos(){
-    setArm1Power(m_arm1Controller.calculate(getArm1Angle()));    
+    double calc = m_arm1Controller.calculate(getArm1Angle());
+    m_arm1ControllerOutput = calc;
+    setArm1Power(calc);    
   }
 
   public void updateArm2Pos(){
-    setArm2Power(m_arm2Controller.calculate(-getArm2Angle()));
+    double calc = m_arm2Controller.calculate(-getArm1Angle());
+    m_arm2ControllerOutput = calc;
+    setArm2Power(calc);
   }
 
   public void updateArmsPos() {
@@ -162,7 +168,9 @@ public class ArmSubsystem extends SubsystemBase {
     arm2RawDist.setDouble(getArm2RawAngle());    
     arm2Connect.setBoolean(m_arm2Encoder.isConnected());
     //arm2Power.setDouble(m_arm2.getOutputCurrent());
-    arm2Power.setDouble(m_arm1.getSelectedSensorVelocity());
+    //arm2Power.setDouble(m_arm1.getSelectedSensorVelocity());
+    arm2Power.setDouble(m_arm2ControllerOutput);
+    arm1Power.setDouble(m_arm1ControllerOutput);
     
     Shuffleboard.update();
 
