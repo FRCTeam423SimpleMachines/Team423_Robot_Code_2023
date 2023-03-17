@@ -79,6 +79,7 @@ public class RobotContainer {
         )
     );
     
+    
   }
 
   /**
@@ -127,10 +128,10 @@ public class RobotContainer {
           () -> m_ArmSubsystem.setArm1Power(-0.4), m_ArmSubsystem));
 
     new JoystickButton(m_driverController2, ControlConstants.kRightBumber)
-        .toggleOnTrue(new MoveArm1Pos(75, m_ArmSubsystem));
+        .onTrue(new MoveArm1Pos(75, m_ArmSubsystem));
 
     new JoystickButton(m_driverController2, ControlConstants.kLeftBumber)
-        .toggleOnTrue(new MoveArm2Pos(0, m_ArmSubsystem));
+        .onTrue(new MoveArm2Pos(0, m_ArmSubsystem));
     
     
 

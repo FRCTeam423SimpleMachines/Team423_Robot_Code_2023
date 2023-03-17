@@ -189,10 +189,10 @@ public final class Constants {
     public static final double kArm2MinAngle = -58;
     public static final double kArm2MaxAngle = 130;
     
-    public static final double kArm1EncoderAngleOffset = 40;
-    public static final double kArm2EncoderAngleOffset = 85;
+    public static final double kArm1EncoderAngleOffset = 52;
+    public static final double kArm2EncoderAngleOffset = -100;
 
-    public static final double kArm1StartingAngle = 110;
+    public static final double kArm1StartingAngle = 105;
     public static final double kArm2StartingAngle = -58;
     
   }
