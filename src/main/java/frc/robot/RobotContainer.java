@@ -79,6 +79,12 @@ public class RobotContainer {
         m_ArmSubsystem
         )
     );
+
+    m_GripperSubsystem.setDefaultCommand(
+      new RunCommand(
+        () -> m_GripperSubsystem.moveWrist(0), 
+        m_GripperSubsystem)
+    );
     
   }
 
@@ -113,7 +119,7 @@ public class RobotContainer {
         () -> m_GripperSubsystem.moveWrist(-0.5),
         m_GripperSubsystem ));
 
-    new JoystickButton(m_driverController2, ControlConstants.kRightBumber).toggleOnTrue(new InstantCommand(()-> m_GripperSubsystem.activateGripper(), m_GripperSubsystem));
+    new JoystickButton(m_driverController, ControlConstants.kLeftBumber).toggleOnTrue(new InstantCommand(()-> m_GripperSubsystem.activateGripper(), m_GripperSubsystem));
 
 
 
