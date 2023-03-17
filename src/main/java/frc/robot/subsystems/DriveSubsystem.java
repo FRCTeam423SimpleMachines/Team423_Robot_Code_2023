@@ -19,7 +19,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.SwerveUtils;
 import frc.robot.Constants.DriveConstants;
@@ -81,7 +80,13 @@ public class DriveSubsystem extends SubsystemBase {
     private boolean drveSfty = true;
 
     GenericEntry driveSafety = Shuffleboard.getTab("Safeties").add("Drive Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
-      
+
+    GenericEntry gyroAngle = Shuffleboard.getTab("Drive").add("Gyro Angle", -m_gyro.getAngle()).getEntry();
+    GenericEntry poseAngle = Shuffleboard.getTab("Drive").add("Pose Angle", getHeading()).getEntry();
+    GenericEntry frontLeftPos = Shuffleboard.getTab("Drive").add("Front Left", m_frontLeft.getPosition().angle.getDegrees()).getEntry();
+    GenericEntry yaw = Shuffleboard.getTab("Drive").add("Yaw", m_gyro.getYaw()).getEntry();
+    GenericEntry pitch = Shuffleboard.getTab("Drive").add("Pitch Angle", m_gyro.getPitch()).getEntry();   
+    
       
 
   /** Creates a new DriveSubsystem. */
@@ -107,14 +112,11 @@ public class DriveSubsystem extends SubsystemBase {
 
         drveSfty = driveSafety.getBoolean(true);
     
-        
-    
-    SmartDashboard.putNumber("Drive/Gyro Angle", -m_gyro.getAngle());
-    SmartDashboard.putNumber("Drive/Pose Angle", getHeading());
-    SmartDashboard.putNumber("Drive/Front Left", m_frontLeft.getPosition().angle.getDegrees());
-    SmartDashboard.putNumber("Drive/Yaw", m_gyro.getYaw());
-    SmartDashboard.putNumber("Drive/Pitch Angle", m_gyro.getPitch());
-    Shuffleboard.update();
+      gyroAngle.setDouble(-m_gyro.getAngle());
+      poseAngle.setDouble(getHeading());
+      frontLeftPos.setDouble(m_frontLeft.getPosition().angle.getDegrees());
+      yaw.setDouble(m_gyro.getYaw());
+      pitch.setDouble(m_gyro.getPitch());  
     
   }
 
