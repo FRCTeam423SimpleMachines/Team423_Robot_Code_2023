@@ -9,8 +9,10 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.GripperConstants;
@@ -18,9 +20,11 @@ import frc.robot.Constants.GripperConstants;
 public class GripperSubsystem extends SubsystemBase {
     
   private DoubleSolenoid m_solenoid;
-  private DutyCycleEncoder m_wristEncoder;
+  private DutyCycleEncoder m_wristEncoder = new DutyCycleEncoder(GripperConstants.kWristEncoderPwmID);
   private CANSparkMax m_wristMotor;
   private ProfiledPIDCommand m_pidController;
+  GenericEntry wristPos = Shuffleboard.getTab("Gripper").add("Gripper Pos",m_wristEncoder.getDistance()).getEntry();
+  GenericEntry wristConnected = Shuffleboard.getTab("Gripper").add("Gripper Connected",m_wristEncoder.isConnected()).getEntry();
   
   /** Creates a new GripperSubsystem. */
   public GripperSubsystem() {
@@ -32,8 +36,8 @@ public class GripperSubsystem extends SubsystemBase {
     m_wristMotor.restoreFactoryDefaults();
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
-    m_wristEncoder = new DutyCycleEncoder(GripperConstants.kWristEncoderPwmID);
     
+    m_wristEncoder.setDistancePerRotation(360);
     // Apply position conversion factors for the wrist encoder. The
     // native units for position are rotations but we want radians
     //m_wristEncoder.setPositionConversionFactor(GripperConstants.kMotorRotationsToRadians);
@@ -97,6 +101,12 @@ public class GripperSubsystem extends SubsystemBase {
 
   public void moveWrist(double speed)
   {
+    if(m_wristEncoder.getDistance() >= GripperConstants.kWristMinSetPoint && speed < 0) {
+      speed = 0;
+    }
+    if(m_wristEncoder.getDistance() <= GripperConstants.kWristMaxSetPoint && speed > 0) {
+      speed = 0;
+    }
     if (Math.abs(speed) > 0.01)
       m_wristMotor.set(speed);
     else
@@ -106,6 +116,10 @@ public class GripperSubsystem extends SubsystemBase {
   public boolean setPointValid(double setpoint)
   {
     return setpoint > GripperConstants.kWristMinSetPoint && setpoint < GripperConstants.kWristMaxSetPoint;
+  }
+
+  public double getWristAngle(){
+    return -m_wristEncoder.getDistance() + GripperConstants.kWristEncoderOffset;
   }
 
   
@@ -130,6 +144,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-  
+    wristPos.setDouble(m_wristEncoder.getDistance());
+    wristConnected.setBoolean(m_wristEncoder.isConnected());
   }
 }

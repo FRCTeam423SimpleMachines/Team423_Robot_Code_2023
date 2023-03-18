@@ -85,6 +85,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setArm1Power(double pow) {
     if (armSfty) {
+      /* 
       if (Math.abs(pow) <= .4)
         m_arm1.set(pow);
       else
@@ -92,6 +93,8 @@ public class ArmSubsystem extends SubsystemBase {
           m_arm1.set(.4);
         if (pow < -.4)
           m_arm1.set(-0.4);
+      */
+      m_arm1.set(pow);
     } else {
       m_arm1.set(0.0);
     }

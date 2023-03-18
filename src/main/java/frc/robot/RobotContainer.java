@@ -4,13 +4,17 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoNothingAuton;
 import frc.robot.commands.DriveAuton;
 import frc.robot.commands.DriveDistance;
+import frc.robot.commands.arm.MoveArm1NonPID;
 import frc.robot.commands.arm.MoveArm1Pos;
+import frc.robot.commands.arm.MoveArm2NonPID;
 import frc.robot.commands.arm.MoveArm2Pos;
+import frc.robot.commands.arm.MoveArmsNonPID;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.balanceAuton.BalanceAuton;
 import frc.robot.commands.balanceAuton.BalanceAutonLowGoal;
@@ -19,6 +23,8 @@ import frc.robot.commands.balanceAuton.BalancePath2;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
 import java.util.ResourceBundle.Control;
+
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -63,6 +69,7 @@ public class RobotContainer {
 
 
     // Put the chooser on the dashboard
+    CameraServer.startAutomaticCapture();
     Shuffleboard.getTab("Autonomous").add(m_chooser);
 
     m_DriveSubsystem.setDefaultCommand(
@@ -82,7 +89,7 @@ public class RobotContainer {
 
     m_GripperSubsystem.setDefaultCommand(
       new RunCommand(
-        () -> m_GripperSubsystem.moveWrist(0), 
+        () -> m_GripperSubsystem.moveWrist(MathUtil.applyDeadband(m_driverController2.getRawAxis(Constants.ControlConstants.kLeftYAxis), 0)), 
         m_GripperSubsystem)
     );
     
@@ -100,6 +107,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
+    // Drive Controls
     new JoystickButton(m_driverController, Constants.ControlConstants.kXButton)
         .whileTrue(new RunCommand(
             () -> m_DriveSubsystem.setX(),
@@ -110,6 +118,18 @@ public class RobotContainer {
             () -> m_DriveSubsystem.resetGyro(),
             m_DriveSubsystem ));
 
+    new JoystickButton(m_driverController, Constants.ControlConstants.kRightBumber)
+        .whileTrue(new RunCommand(
+          () -> m_DriveSubsystem.drive(
+            MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
+            MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
+            MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
+            true, false, true), m_DriveSubsystem));
+
+    
+    // Wrist Controls
+
+    /* Test Code
     new JoystickButton(m_driverController, Constants.ControlConstants.kBButton)
     .whileTrue(new RunCommand(
         () -> m_GripperSubsystem.moveWrist(0.5),
@@ -119,19 +139,17 @@ public class RobotContainer {
     .whileTrue(new RunCommand(
         () -> m_GripperSubsystem.moveWrist(-0.5),
         m_GripperSubsystem ));
+    */
 
-    new JoystickButton(m_driverController, ControlConstants.kLeftBumber).toggleOnTrue(new InstantCommand(()-> m_GripperSubsystem.activateGripper(), m_GripperSubsystem));
+    // Opens and closes gripper
+    new JoystickButton(m_driverController2, ControlConstants.kLeftBumber).toggleOnTrue(new InstantCommand(()-> m_GripperSubsystem.activateGripper(), m_GripperSubsystem));
 
 
 
-    new JoystickButton(m_driverController, Constants.ControlConstants.kRightBumber)
-        .whileTrue(new RunCommand(
-          () -> m_DriveSubsystem.drive(
-            MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis)) , 0.3),
-            MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis)) , 0.3),
-            MathUtil.applyDeadband(-squareInput(m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis)), 0.3),
-            true, false, true), m_DriveSubsystem));
-    
+
+    // Arm Controls
+    // Test Code
+    /* 
     new JoystickButton(m_driverController2, ControlConstants.kAButton)
         .whileTrue(new RunCommand(
           () -> m_ArmSubsystem.setArm2Power(-0.2), m_ArmSubsystem));
@@ -149,21 +167,30 @@ public class RobotContainer {
           () -> m_ArmSubsystem.setArm1Power(-0.4), m_ArmSubsystem));
 
     new JoystickButton(m_driverController2, ControlConstants.kRightBumber)
-        .onTrue(new MoveArm1Pos(75, m_ArmSubsystem));
+        .onTrue(new MoveArm1NonPID(75, m_ArmSubsystem));
 
     new JoystickButton(m_driverController2, ControlConstants.kLeftBumber)
-        .onTrue(new MoveArm2Pos(0, m_ArmSubsystem));
+        .onTrue(new MoveArm2NonPID(0, m_ArmSubsystem));
+    */
+     
+    new JoystickButton(m_driverController2, ControlConstants.kYButton)
+      .onTrue(new MoveArmsNonPID(ArmConstants.kArm1HighAngle, ArmConstants.kArm2HighAngle, m_ArmSubsystem)
+    );
     
+    new JoystickButton(m_driverController2, ControlConstants.kRightBumber)
+      .onTrue(new MoveArmsNonPID(ArmConstants.kArm1StartingAngle, ArmConstants.kArm2StartingAngle, m_ArmSubsystem)
+    );
+
+    new JoystickButton(m_driverController2, ControlConstants.kBButton)
+      .onTrue(new MoveArmsNonPID(ArmConstants.kArm1MiddleAngle, ArmConstants.kArm2MiddleAngle, m_ArmSubsystem)
+    );
+
+    new JoystickButton(m_driverController2, ControlConstants.kAButton)
+      .onTrue(new MoveArmsNonPID(ArmConstants.kArm1PickupAngle, ArmConstants.kArm2PickupAngle, m_ArmSubsystem)
+    );
     
 
-/* 
-    new JoystickButton(m_driverController, Constants.ControlConstants.kLeftBumber)
-        .whileTrue(new Drive(
-          MathUtil.applyDeadband(!m_driverController.getRawButton(Constants.ControlConstants.kRightBumber) ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftXAxis) : 0.0, 0.06),
-          MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.ControlConstants.kRightTrigger) < 0.6 ? -m_driverController.getRawAxis(Constants.ControlConstants.kLeftYAxis) : 0.0, 0.06),
-          MathUtil.applyDeadband(-m_driverController.getRawAxis(Constants.ControlConstants.kRightXAxis), 0.06),
-          true, m_DriveSubsystem, 0.5));
-*/
+
             
   }
 

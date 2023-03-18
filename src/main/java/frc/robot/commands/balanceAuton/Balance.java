@@ -36,10 +36,10 @@ public class Balance extends CommandBase{
 
         if (pitch < -4 && pitchDiff < 6){
             counter = 0;
-            m_DriveSubsystem.drive(0.07, 0, 0, true, false);
+            m_DriveSubsystem.drive(0.14, 0, 0, true, false);
         } else if (pitch > 4 && pitchDiff < 6 ){
             counter = 0;
-            m_DriveSubsystem.drive(-0.07, 0, 0, true, false);
+            m_DriveSubsystem.drive(-0.14, 0, 0, true, false);
         } else {
             counter ++;
             //m_DriveSubsystem.drive(0, 0, 0, true, false);

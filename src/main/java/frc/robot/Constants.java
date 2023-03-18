@@ -202,8 +202,20 @@ public final class Constants {
     public static final double kArm1EncoderAngleOffset = 52;
     public static final double kArm2EncoderAngleOffset = -100;
 
-    public static final double kArm1StartingAngle = 105;
-    public static final double kArm2StartingAngle = -58;
+    public static final double kArm1StartingAngle = 108;
+    public static final double kArm2StartingAngle = -60;
+
+    public static final double kArm1PickupAngle = 33;
+    public static final double kArm2PickupAngle = -20;
+
+    public static final double kArm1LowAngle = 33;
+    public static final double kArm2LowAngle = -20;
+
+    public static final double kArm1MiddleAngle = 77;
+    public static final double kArm2MiddleAngle = 0;
+
+    public static final double kArm1HighAngle = 44;
+    public static final double kArm2HighAngle = 60;
     
   }
 
@@ -276,16 +288,18 @@ public final class Constants {
      public static int kWristMotorCanID = 22;
 
      // Setpoint in degrees of initial position
-     public static double kWristInitialSetpoint = 0;
+     public static double kWristInitialSetpoint = 87;
  
      // How many radians of movement of the gripper per rotation of the motor
      public static final double kMotorRotationsToRadians = 2 * Math.PI;
      // Maximum and minimum range of the wrist
-     public static final double kWristMaxSetPoint = Math.PI/2;
-     public static final double kWristMinSetPoint = -Math.PI/2;
+     public static final double kWristMaxSetPoint = 87;
+     public static final double kWristMinSetPoint = -90;
 
      public static final double kWristEncoderPositionPIDMinInput = 0; // radians
      public static final double kWristEncoderPositionPIDMaxInput = (2 * Math.PI);
+
+     public static final double kWristEncoderOffset = 90;
 
              // PID Variables
     public static final double kP = 1; 
