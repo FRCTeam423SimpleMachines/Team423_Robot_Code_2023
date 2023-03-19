@@ -23,6 +23,7 @@ public class GripperSubsystem extends SubsystemBase {
   private DutyCycleEncoder m_wristEncoder = new DutyCycleEncoder(GripperConstants.kWristEncoderPwmID);
   private CANSparkMax m_wristMotor;
   private ProfiledPIDCommand m_pidController;
+  private double offset;
   GenericEntry wristPos = Shuffleboard.getTab("Gripper").add("Gripper Pos",m_wristEncoder.getDistance()).getEntry();
   GenericEntry wristConnected = Shuffleboard.getTab("Gripper").add("Gripper Connected",m_wristEncoder.isConnected()).getEntry();
   
@@ -77,6 +78,12 @@ public class GripperSubsystem extends SubsystemBase {
   
     // Initialize the solenoid so the gripper knows where to start.  
     m_solenoid.set(GripperConstants.kGripperInitialState);
+
+    if (m_wristEncoder.getDistance() > 270 ){
+      offset = -360 + GripperConstants.kWristEncoderOffset;
+    } else {
+      offset = GripperConstants.kWristEncoderOffset;
+    }
   }
   
  /* 
@@ -101,12 +108,14 @@ public class GripperSubsystem extends SubsystemBase {
 
   public void moveWrist(double speed)
   {
-    if(m_wristEncoder.getDistance() >= GripperConstants.kWristMinSetPoint && speed < 0) {
+    
+    if(getWristAngle() <= GripperConstants.kWristMaxSetPoint && speed < 0) {
       speed = 0;
     }
-    if(m_wristEncoder.getDistance() <= GripperConstants.kWristMaxSetPoint && speed > 0) {
+    if(getWristAngle() >= GripperConstants.kWristMinSetPoint && speed > 0) {
       speed = 0;
     }
+    
     if (Math.abs(speed) > 0.01)
       m_wristMotor.set(speed);
     else
@@ -119,7 +128,7 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public double getWristAngle(){
-    return -m_wristEncoder.getDistance() + GripperConstants.kWristEncoderOffset;
+    return (m_wristEncoder.getDistance()) + offset;
   }
 
   
@@ -144,7 +153,7 @@ public class GripperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    wristPos.setDouble(m_wristEncoder.getDistance());
+    wristPos.setDouble(getWristAngle());
     wristConnected.setBoolean(m_wristEncoder.isConnected());
   }
 }

@@ -34,9 +34,9 @@ public class MoveArmsNonPID extends CommandBase{
         
 
         if (m_armsubsystem.getArm2Angle() > goal2 + tolerance){
-            m_armsubsystem.setArm2Power(-0.2);
+            m_armsubsystem.setArm2Power(-0.3);
         } else if (m_armsubsystem.getArm2Angle() < goal2 - tolerance){
-            m_armsubsystem.setArm2Power(0.2);
+            m_armsubsystem.setArm2Power(0.3);
         } else {
             m_armsubsystem.setArm2Power(0);
         }

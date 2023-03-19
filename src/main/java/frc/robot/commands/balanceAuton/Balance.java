@@ -34,12 +34,12 @@ public class Balance extends CommandBase{
 
         double pitchDiff = Math.abs(pitch) - Math.abs(initialPitch);
 
-        if (pitch < -4 && pitchDiff < 6){
+        if (pitch < -4 && pitchDiff < 4){
             counter = 0;
-            m_DriveSubsystem.drive(0.14, 0, 0, true, false);
-        } else if (pitch > 4 && pitchDiff < 6 ){
+            m_DriveSubsystem.drive(0.09, 0, 0, true, false);
+        } else if (pitch > 4 && pitchDiff < 4 ){
             counter = 0;
-            m_DriveSubsystem.drive(-0.14, 0, 0, true, false);
+            m_DriveSubsystem.drive(-0.09, 0, 0, true, false);
         } else {
             counter ++;
             //m_DriveSubsystem.drive(0, 0, 0, true, false);

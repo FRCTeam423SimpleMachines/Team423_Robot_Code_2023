@@ -48,7 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   // The gyro sensor
-  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP, (byte)200);
 
   private double robotAngle = 0;
   private double rotatingBuffer = 0;

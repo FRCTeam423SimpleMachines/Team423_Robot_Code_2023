@@ -9,6 +9,7 @@ import frc.robot.Constants.ControlConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DoNothingAuton;
 import frc.robot.commands.DriveAuton;
+import frc.robot.commands.DriveAutonLowScore;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.arm.MoveArm1NonPID;
 import frc.robot.commands.arm.MoveArm1Pos;
@@ -20,6 +21,12 @@ import frc.robot.commands.balanceAuton.BalanceAuton;
 import frc.robot.commands.balanceAuton.BalanceAutonLowGoal;
 import frc.robot.commands.balanceAuton.BalancePath1;
 import frc.robot.commands.balanceAuton.BalancePath2;
+import frc.robot.commands.gripper.MoveWristNonPID;
+import frc.robot.commands.scoringAuton.ScoreHighBalance;
+import frc.robot.commands.scoringAuton.ScoreHighDoNothing;
+import frc.robot.commands.scoringAuton.ScoreHighDrive;
+import frc.robot.commands.scoringAuton.ScorePathBalance;
+import frc.robot.commands.scoringAuton.ScorePathDrive;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
 import java.util.ResourceBundle.Control;
@@ -31,6 +38,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -64,8 +72,12 @@ public class RobotContainer {
 
     m_chooser.setDefaultOption("Do Nothing", new DoNothingAuton(m_DriveSubsystem));
     m_chooser.addOption("Drive forward 3m", new DriveAuton(m_DriveSubsystem, DriveDistance.returnController(m_DriveSubsystem)));
+    m_chooser.addOption("Score low and drive foward", new DriveAutonLowScore(m_DriveSubsystem, m_ArmSubsystem, DriveDistance.returnController(m_DriveSubsystem)));
     m_chooser.addOption("Charging Station Balance", new BalanceAuton(m_DriveSubsystem, BalancePath1.returnController(m_DriveSubsystem), BalancePath2.returnController(m_DriveSubsystem)));
-    //m_chooser.addOption("Charging Station Balance with Low Goal", new BalanceAutonLowGoal(m_DriveSubsystem, m_ArmSubsystem, BalancePath1.returnController(m_DriveSubsystem), BalancePath2.returnController(m_DriveSubsystem)));
+    m_chooser.addOption("Score High and Balance", new ScoreHighBalance(m_DriveSubsystem, m_ArmSubsystem, m_GripperSubsystem, ScorePathBalance.returnController(m_DriveSubsystem)));
+    m_chooser.addOption("Score High and Drive", new ScoreHighDrive(m_DriveSubsystem, m_ArmSubsystem, m_GripperSubsystem, ScorePathDrive.returnController(m_DriveSubsystem)));
+    m_chooser.addOption("Score High and Do Nothing", new ScoreHighDoNothing(m_ArmSubsystem, m_GripperSubsystem, ScorePathDrive.returnController(m_DriveSubsystem)));
+    m_chooser.addOption("Charging Station Balance with Low Goal", new BalanceAutonLowGoal(m_DriveSubsystem, m_ArmSubsystem, BalancePath1.returnController(m_DriveSubsystem), BalancePath2.returnController(m_DriveSubsystem)));
 
 
     // Put the chooser on the dashboard
@@ -143,13 +155,13 @@ public class RobotContainer {
 
     // Opens and closes gripper
     new JoystickButton(m_driverController2, ControlConstants.kLeftBumber).toggleOnTrue(new InstantCommand(()-> m_GripperSubsystem.activateGripper(), m_GripperSubsystem));
-
+    //new JoystickButton(m_driverController2, ControlConstants.kXButton).toggleOnTrue(new MoveWristNonPID(200, m_GripperSubsystem));
 
 
 
     // Arm Controls
     // Test Code
-    /* 
+    /*
     new JoystickButton(m_driverController2, ControlConstants.kAButton)
         .whileTrue(new RunCommand(
           () -> m_ArmSubsystem.setArm2Power(-0.2), m_ArmSubsystem));
@@ -171,14 +183,14 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController2, ControlConstants.kLeftBumber)
         .onTrue(new MoveArm2NonPID(0, m_ArmSubsystem));
-    */
-     
+    
+    */ 
     new JoystickButton(m_driverController2, ControlConstants.kYButton)
       .onTrue(new MoveArmsNonPID(ArmConstants.kArm1HighAngle, ArmConstants.kArm2HighAngle, m_ArmSubsystem)
     );
     
     new JoystickButton(m_driverController2, ControlConstants.kRightBumber)
-      .onTrue(new MoveArmsNonPID(ArmConstants.kArm1StartingAngle, ArmConstants.kArm2StartingAngle, m_ArmSubsystem)
+      .onTrue(new ParallelCommandGroup(new MoveWristNonPID(20, m_GripperSubsystem),new MoveArmsNonPID(Constants.ArmConstants.kArm1StartingAngle, Constants.ArmConstants.kArm2StartingAngle, m_ArmSubsystem))
     );
 
     new JoystickButton(m_driverController2, ControlConstants.kBButton)
@@ -186,10 +198,12 @@ public class RobotContainer {
     );
 
     new JoystickButton(m_driverController2, ControlConstants.kAButton)
-      .onTrue(new MoveArmsNonPID(ArmConstants.kArm1PickupAngle, ArmConstants.kArm2PickupAngle, m_ArmSubsystem)
+      .onTrue(new ParallelCommandGroup(new MoveWristNonPID(126, m_GripperSubsystem), new MoveArmsNonPID(ArmConstants.kArm1PickupAngle, ArmConstants.kArm2PickupAngle, m_ArmSubsystem))
+    );
+    new JoystickButton(m_driverController2, ControlConstants.kXButton)
+      .onTrue(new MoveArmsNonPID(ArmConstants.kArm1StationAngle, ArmConstants.kArm2StationAngle, m_ArmSubsystem)
     );
     
-
 
             
   }
