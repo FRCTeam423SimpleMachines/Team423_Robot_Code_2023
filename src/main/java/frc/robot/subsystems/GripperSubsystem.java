@@ -5,8 +5,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.GripperConstants;
@@ -17,6 +21,10 @@ public class GripperSubsystem extends SubsystemBase {
   private DutyCycleEncoder m_wristEncoder;
   private CANSparkMax m_wristMotor;
   private ProfiledPIDCommand m_pidController;
+
+  private boolean GrpprSfty = true;
+
+  GenericEntry GripperSafety = Shuffleboard.getTab("Safeties").add("Drive Safety", true).withWidget(BuiltInWidgets.kToggleSwitch).getEntry();
   
   /** Creates a new GripperSubsystem. */
   public GripperSubsystem() {
@@ -56,12 +64,16 @@ public class GripperSubsystem extends SubsystemBase {
     }
   }
 
+
+
   public void moveWrist(double speed)
   {
-    if (Math.abs(speed) > 0.01)
-      m_wristMotor.set(speed);
-    else
-      m_wristMotor.set(0);
+    if(GrpprSfty) {
+      if (Math.abs(speed) > 0.01)
+        m_wristMotor.set(speed);
+      else
+        m_wristMotor.set(0);
+    }
   }
 
   public boolean setPointValid(double setpoint)
@@ -76,7 +88,9 @@ public class GripperSubsystem extends SubsystemBase {
 
   public void activateGripper()
   {
-    m_solenoid.toggle();
+    if(GrpprSfty) {
+      m_solenoid.toggle();
+    }
   }
   
   public void openGripper()
@@ -91,6 +105,6 @@ public class GripperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-  
+    GrpprSfty = GripperSafety.getBoolean(true);
   }
 }
