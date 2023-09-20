@@ -14,7 +14,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class VisionSubsystem extends SubsystemBase {
 
   private int pipeline;
-//first three to be changed later
+  //first three to be changed later
   private final double LENGTH = 2.5;
   private final double HEIGHT = 7.458333333;
   private final double LIMELIGHT_HEIGHT = 1.833333;
