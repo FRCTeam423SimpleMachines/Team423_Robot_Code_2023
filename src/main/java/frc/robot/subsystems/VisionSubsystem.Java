@@ -6,7 +6,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -32,6 +34,19 @@ public class VisionSubsystem extends SubsystemBase {
   private double angleToGoal;
 
   private Integer angleOnGoalCount = 0;
+
+  GenericEntry dashtv = Shuffleboard.getTab("Vision").add("tv", tv).getEntry();
+  GenericEntry dashtx = Shuffleboard.getTab("Vision").add("tx", tx).getEntry();
+  GenericEntry dashty = Shuffleboard.getTab("Vision").add("ty", ty).getEntry();
+  GenericEntry dashta = Shuffleboard.getTab("Vision").add("ta", ta).getEntry();
+  GenericEntry dashts = Shuffleboard.getTab("Vision").add("ts", ts).getEntry();
+  GenericEntry dashtl = Shuffleboard.getTab("Vision").add("tl", tl).getEntry();
+  GenericEntry dashtshort = Shuffleboard.getTab("Vision").add("t short", tshort).getEntry();
+  GenericEntry dashtlong = Shuffleboard.getTab("Vision").add("t long", tlong).getEntry();
+  GenericEntry dashthor = Shuffleboard.getTab("Vision").add("t horizontal", thor).getEntry();
+  GenericEntry dashtvert = Shuffleboard.getTab("Vision").add("t vertical", tvert).getEntry();
+  GenericEntry dashDistanceToGoal = Shuffleboard.getTab("Vision").add("Distance To Goal", distanceToGoal).getEntry();
+  GenericEntry dashangleToGoal = Shuffleboard.getTab("Vision").add("Angle To Goal", angleToGoal).getEntry();
 
   public VisionSubsystem() {
       pipeline = 0;
@@ -88,6 +103,19 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    run();
+    dashtv.setDouble(tv);
+    dashtx.setDouble(tx); 
+    dashty.setDouble(ty);
+    dashta.setDouble(ta); 
+    dashts.setDouble(ts);
+    dashtl.setDouble(tl);
+    dashtshort.setDouble(tshort);
+    dashtlong.setDouble(tlong);
+    dashthor.setDouble(thor);
+    dashtvert.setDouble(tvert);
+    dashDistanceToGoal.setDouble(distanceToGoal);
+    dashangleToGoal.setDouble(angleToGoal);
   }
 
   @Override
