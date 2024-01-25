@@ -1,9 +1,9 @@
 package frc.robot.commands.arm;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class MoveArmsPos extends CommandBase{
+public class MoveArmsPos extends Command{
 
     ArmSubsystem m_armsubsystem;
     double goal1, goal2;

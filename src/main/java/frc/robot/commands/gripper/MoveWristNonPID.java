@@ -1,10 +1,9 @@
 package frc.robot.commands.gripper;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.GripperSubsystem;
 
-public class MoveWristNonPID extends CommandBase{
+public class MoveWristNonPID extends Command{
  
     GripperSubsystem m_grippersubsystem;
     double goal;

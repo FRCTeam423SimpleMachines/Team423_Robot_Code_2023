@@ -6,7 +6,6 @@ package frc.robot.commands.scoringAuton;
 
 import frc.robot.Constants;
 import frc.robot.commands.arm.MoveArmsNonPID;
-import frc.robot.commands.balanceAuton.Balance;
 import frc.robot.commands.gripper.MoveWristNonPID;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;

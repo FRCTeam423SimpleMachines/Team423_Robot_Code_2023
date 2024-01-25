@@ -1,11 +1,11 @@
 package frc.robot.commands.balanceAuton;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.DriveSubsystem;
 
 
-public class Balance extends CommandBase{
+public class Balance extends Command{
 
     DriveSubsystem m_DriveSubsystem;
     int counter;

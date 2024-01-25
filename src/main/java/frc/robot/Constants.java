@@ -4,8 +4,8 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -285,8 +285,6 @@ public final class Constants {
     /* 
      * Wrist Constants
      */
-
-     public static final MotorType kWristMotorType = MotorType.kBrushless;
 
      //Assign PWM ID for encoder
      public static final int kWristEncoderPwmID = 2;

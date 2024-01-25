@@ -4,9 +4,9 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
@@ -19,7 +19,7 @@ import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
-  private final WPI_TalonFX m_arm1 = new WPI_TalonFX(ArmConstants.kArm1CanId);
+  private final TalonFX m_arm1 = new TalonFX(ArmConstants.kArm1CanId);
   private final CANSparkMax m_arm2 = new CANSparkMax(ArmConstants.kArm2CanId, MotorType.kBrushless);
 
   private DutyCycleEncoder m_arm1Encoder = new DutyCycleEncoder(ArmConstants.kArm1EncoderChannel);

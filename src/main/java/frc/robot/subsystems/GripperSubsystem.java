@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkLowLevel;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -21,7 +23,7 @@ public class GripperSubsystem extends SubsystemBase {
     
   private DoubleSolenoid m_solenoid;
   private DutyCycleEncoder m_wristEncoder = new DutyCycleEncoder(GripperConstants.kWristEncoderPwmID);
-  private CANSparkMax m_wristMotor;
+  private CANSparkMax m_wristMotor = new CANSparkMax(GripperConstants.kWristMotorCanID, MotorType.kBrushless);
   private ProfiledPIDCommand m_pidController;
   private double offset;
   GenericEntry wristPos = Shuffleboard.getTab("Gripper").add("Gripper Pos",m_wristEncoder.getDistance()).getEntry();
@@ -29,9 +31,7 @@ public class GripperSubsystem extends SubsystemBase {
   
   /** Creates a new GripperSubsystem. */
   public GripperSubsystem() {
-    
-    m_wristMotor = new CANSparkMax(GripperConstants.kWristMotorCanID, GripperConstants.kWristMotorType);
-
+  
     // Factory reset, so we get the SPARKS MAX to a known state before configuring
     // them. This is useful in case a SPARK MAX is swapped out.
     m_wristMotor.restoreFactoryDefaults();
