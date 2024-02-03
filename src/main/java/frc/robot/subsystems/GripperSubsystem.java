@@ -93,6 +93,7 @@ public class GripperSubsystem extends SubsystemBase {
   public void setWristAngleDegrees(double angle)
   {
     setWristAngleRadians(Math.toRadians(angle));
+    
   }
 
 

@@ -27,12 +27,18 @@ import frc.robot.commands.scoringAuton.ScoreHighDoNothing;
 import frc.robot.commands.scoringAuton.ScoreHighDrive;
 import frc.robot.commands.scoringAuton.ScorePathBalance;
 import frc.robot.commands.scoringAuton.ScorePathDrive;
+import frc.robot.commands.visionAim.TagAlign;
+import frc.robot.commands.visionAim.TagShift;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
 import java.util.ResourceBundle.Control;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -55,6 +61,7 @@ public class RobotContainer {
   private final DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
   private final GripperSubsystem m_GripperSubsystem = new GripperSubsystem();
   private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
+  private final VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
 
   // A chooser for autonomous commands
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -94,7 +101,7 @@ public class RobotContainer {
     
     m_ArmSubsystem.setDefaultCommand(
       new RunCommand(
-        () -> m_ArmSubsystem.setArmPower(0,0),
+        () -> m_ArmSubsystem.setArmPower(0.5*m_driverController2.getRawAxis(ControlConstants.kRightYAxis),0),
         m_ArmSubsystem
         )
     );
@@ -156,8 +163,18 @@ public class RobotContainer {
     // Opens and closes gripper
     new JoystickButton(m_driverController2, ControlConstants.kLeftBumber).toggleOnTrue(new InstantCommand(()-> m_GripperSubsystem.activateGripper(), m_GripperSubsystem));
     //new JoystickButton(m_driverController2, ControlConstants.kXButton).toggleOnTrue(new MoveWristNonPID(200, m_GripperSubsystem));
+    
 
+    
+    
+    //Stupid vision buttons
+   
 
+    new JoystickButton(m_driverController2, Constants.ControlConstants.kBButton)
+    .onTrue(new TagAlign(m_VisionSubsystem, m_DriveSubsystem));
+
+    new JoystickButton(m_driverController2, Constants.ControlConstants.kXButton)
+    .onTrue(new TagShift(m_VisionSubsystem, m_DriveSubsystem));
 
     // Arm Controls
     // Test Code
@@ -184,7 +201,7 @@ public class RobotContainer {
     new JoystickButton(m_driverController2, ControlConstants.kLeftBumber)
         .onTrue(new MoveArm2NonPID(0, m_ArmSubsystem));
     
-    */ 
+    */ /*
     new JoystickButton(m_driverController2, ControlConstants.kYButton)
       .onTrue(new MoveArmsNonPID(ArmConstants.kArm1HighAngle, ArmConstants.kArm2HighAngle, m_ArmSubsystem)
     );
@@ -193,10 +210,10 @@ public class RobotContainer {
       .onTrue(new ParallelCommandGroup(new MoveWristNonPID(20, m_GripperSubsystem),new MoveArmsNonPID(Constants.ArmConstants.kArm1StartingAngle, Constants.ArmConstants.kArm2StartingAngle, m_ArmSubsystem))
     );
 
-    new JoystickButton(m_driverController2, ControlConstants.kBButton)
+    /*new JoystickButton(m_driverController2, ControlConstants.kBButton)
       .onTrue(new MoveArmsNonPID(ArmConstants.kArm1MiddleAngle, ArmConstants.kArm2MiddleAngle, m_ArmSubsystem)
-    );
-
+    );*/
+/* 
     new JoystickButton(m_driverController2, ControlConstants.kAButton)
       .onTrue(new ParallelCommandGroup(new MoveWristNonPID(126, m_GripperSubsystem), new MoveArmsNonPID(ArmConstants.kArm1PickupAngle, ArmConstants.kArm2PickupAngle, m_ArmSubsystem))
     );
@@ -204,7 +221,7 @@ public class RobotContainer {
       .onTrue(new MoveArmsNonPID(ArmConstants.kArm1StationAngle, ArmConstants.kArm2StationAngle, m_ArmSubsystem)
     );
     
-
+        */
             
   }
 
